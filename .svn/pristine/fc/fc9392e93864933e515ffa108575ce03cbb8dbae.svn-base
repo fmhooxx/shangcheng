@@ -1,0 +1,19 @@
+<template>
+	<view style="text-align: center;">
+		<image src="../../static/temp/banner3.jpg" mode="" style="margin:  50rpx auto;"></image>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			};
+		}
+	}
+</script>
+
+<style lang="scss">
+
+</style>

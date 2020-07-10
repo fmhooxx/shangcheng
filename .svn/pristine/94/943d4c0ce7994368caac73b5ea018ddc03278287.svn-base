@@ -1,0 +1,145 @@
+<template>
+ <view class="content">
+  <view class="common-t">
+   <text class="common-one"></text>
+   <text>新增会员ID</text>
+   <text class ="money">
+    状态
+   
+   </text>
+   <text >
+    消费
+   	<i>(元)</i>
+   </text>
+   <text>日期</text>
+  </view>
+  <view class="common">
+   <text class="common-one">01</text>
+   <text >135***0928</text>
+   <text>未激活</text>
+   <text>660.66</text>
+   <text class="data">2020-04-12</text>
+   
+  </view>
+  <view class="common">
+   <text class="common-one">02</text>
+   <text >135***0928</text>
+   <text class ="buyin">已激活</text>
+   <text>660.66</text>
+   <text class="data">2020-04-12</text>
+   
+  </view>
+  <view class ="footer">
+  	 <view class="f-l">统计
+  	 <text class ="today">今日</text>
+  	 </view>
+  	 <view class ="f-r">
+  		 <text>新增 (人): 10000</text>
+  		 <text>激活 (人) : 60000</text>
+  		 <view class ="f-f">
+  			 <text>新增激活人数消费总额（元）：38000</text>
+  		 </view>
+  	 </view>
+  </view>
+ </view>
+</template>
+
+<script>
+export default {
+ data() {
+  return {};
+ }
+};
+</script>
+
+<style lang="scss">
+	
+ page {
+  background-color: #fff;
+ }
+ .common-t{
+	 background-color:#85B0E1 !important;
+	 color:rgba(255,255,255,1);
+ }
+ .common{
+	 color: #545454;
+	 padding: 0 6rpx;
+	  margin-top: 20rpx;
+ }
+.common,.common-t {
+ font-size: 26rpx;
+ display: flex;
+ justify-content: space-evenly;
+ align-items: center;
+ background-color: #fff;
+ .money{
+	 width: 22%;
+ }
+ .number{
+	 width: 17%;
+ }
+ 
+ 
+ .common-one { 
+  width: 5%;
+ }
+ > text {
+  width: 20%;
+  text-align: center;
+  height: 80rpx;
+  line-height: 80rpx;
+  // border: 1px solid skyblue;
+ }
+ i{
+	 font-style: normal;
+	color:rgba(255,255,255,1);
+	 font-size:6upx;
+ }
+ .buyin{
+	 
+	  color:#DFA15A;
+	
+ }
+}
+.footer{
+	 position: absolute;
+	 bottom:30rpx;
+	 display: flex;
+	
+	 .f-l{
+		 display: flex;
+		 flex-direction: column;
+		 color:#396383;
+		 font-size:40rpx;
+		 border-right: 1rpx solid #D7D7D7;
+		width: 150rpx;
+		height: 110rpx;
+		text-align: center;
+		
+		
+	 }
+	 .today{
+		 font-size:30rpx;
+		 color: #9F9F9F;
+	 }s
+	 .f-r{
+		 // margin-left: 50rpx;
+  
+	 }
+	 .f-r text{
+		
+		 display: inline-block;
+		margin-left:30rpx;
+		color: #396383;
+		padding: 0 20rpx;
+		height:60rpx;
+		background:rgba(236,242,247,1);
+		border-radius:46rpx;
+		
+	 }
+	 .f-f{
+		 margin-top: 20rpx;
+	 }
+	 }
+	
+</style>

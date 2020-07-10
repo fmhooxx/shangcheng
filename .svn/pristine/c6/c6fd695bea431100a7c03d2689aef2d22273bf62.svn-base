@@ -1,0 +1,112 @@
+<template>
+	<view>
+		<view class="hd-list border">
+			<text>成交时间</text>
+			<text>交易金额</text>
+			<text>交易数量</text>
+			<text>交易状态</text>
+		</view>
+		<view class="hd-list" v-for="(item,index) in list" :key = "index" style="height: 100rpx;" @click="jump(item.OrderStatus,item.TransactionType,item.FishRecordId,item.SellerUserId)">
+			<text>{{item.CreateDate}}</text>
+			<text>{{item.total}}</text>
+			<text>{{item.FishNumber}}</text>
+			<text>{{item.PayStatus}}</text>
+		</view>
+		<uniLoadMore :status="loadingType"></uniLoadMore>
+	</view>
+</template>
+
+<script>
+	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	export default {
+		components:{
+			uniLoadMore
+		},
+		data() {
+			return {
+				list:[],
+				start:0,
+				total:null,
+				id:'',
+				loadingType:'more'
+			};
+		},
+		onLoad(options) {
+			uni.setNavigationBarTitle({
+			　　title:options.id
+			})
+			this.id = options.id
+			this.getshu()
+		},
+		onReachBottom(){
+			this.getshu()
+		},
+		methods:{
+			jump(status,flag,FishRecordId,SellerUserId){
+				let userId = uni.getStorageSync('UserId')
+				if(status == 10){
+					return
+				}
+				 if(SellerUserId == userId){
+				          uni.navigateTo({
+				            url:'/pages/FishCurrency/transaction/payInfo?orderId='+FishRecordId
+				          })
+				        }else{
+				          uni.navigateTo({
+				            url:"/pages/FishCurrency/transaction/buyProcess/buyProcess?orderId="+FishRecordId
+				          })
+				        }
+			},
+			async getshu(){
+				let data = {
+					FishOrderId:this.id,
+					Captain:1,
+					Offset: Math.ceil(this.start / 10), //页面
+					RowNumber: 10 //条数
+				}
+				let StringData = JSON.stringify(data)
+				let param = {
+					data:StringData,
+					action:"ReadFishOrderRecord"
+				}
+				let res = await this.$api.api.assets(param)
+				if(res.data.status == true){
+				res.data.data.forEach((item,index) => {
+						if(item.PayStatus == 0){
+							item.PayStatus = "交易中"
+						}
+						if(item.PayStatus == 1){
+							item.PayStatus = "成功"
+						}
+						if(item.PayStatus == 2){
+							item.PayStatus = "失败"
+						}
+						item.total = parseInt(item.FishPrice)*parseInt(item.FishNumber)
+				})
+					this.total = res.data.sum[0].count
+					this.start += res.data.data.length
+					this.list = this.list.concat(res.data.data)
+					this.loadingType = this.total > this.start ? 'more' : 'nomore';
+				}
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+.hd-list{
+	height: 80rpx;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	border-bottom: 1rpx solid #F5F5F5;
+	text{
+		flex: 1;
+		display: block;
+		text-align: center;
+	}
+}
+.border{
+	border-bottom: 15rpx solid #F5F5F5;
+}
+</style>

@@ -1,0 +1,260 @@
+<template>
+	<view>
+	<view class="vip-box">
+		<!-- 第一个列表 -->
+		<view class="list-box">
+			<view>
+				<image src="../../static/vip/list4.png" mode=""></image>
+				<text class="vip-list-name">发行总量</text>
+				<text class="num">10000.000</text>
+			</view>
+			<view>
+				<image src="../../static/vip/list1.png" mode=""></image>
+				<text class="vip-list-name">剩余总数</text>
+				<text class="num">10000.000</text>
+			</view>
+			<view>
+				<image src="../../static/vip/list2.png" mode=""></image>
+				<text class="vip-list-name">流通总数</text>
+				<text class="num">10000.000</text>
+			</view>
+		</view>
+		<!-- 第二个列表 -->
+		<view>
+			<view class="list-second">
+				<view>
+					<view class="image-box">
+						<image src="../../static/vip/jiageprice1.png" mode="" class="image"></image><text>今日价</text>
+					</view>
+					<view class="price">1000.00</view>
+				</view>
+				<view>
+					<view class="image-box">
+						<image src="../../static/vip/jiageprice2.png" mode="" class="image"></image><text>昨日价</text>
+					</view>
+					<view class="price">1000.00</view>
+				</view>
+				<view>
+					<view class="one">历史价</view>
+					<image src="../../static/vip/tubiaozhexiantu.png" mode="" class="image2"></image>
+				</view>
+			</view>
+		</view>
+		<!-- 第三个列表 -->
+		<view>
+			<view class="list-second" style="border-top: none;">
+				<view>
+					<view class="image-box">
+						<image src="../../static/vip/xiangmuguanlifuzhi.png" mode="" class="image"></image><text>今日量</text>
+					</view>
+					<view class="price">1000.00</view>
+				</view>
+				<view>
+					<view class="image-box">
+						<image src="../../static/vip/xiangmuguanlifuzhi1.png" mode="" class="image"></image><text>昨日量</text>
+					</view>
+					<view class="price">1000.00</view>
+				</view>
+				<view>
+					<view class="one">历史量</view>
+					<image src="../../static/vip/list3.png" mode="" class="image2"></image>
+				</view>
+			</view>
+		</view>
+		<!-- 第四个进度条 -->
+		<view style="display: flex;justify-content: center;padding: 30rpx 0;" @click="navTo('/pages/integralPages/statisticsList/consumption')">
+			<view class="progress-list">
+				<view>消费情况</view>
+				<view class="progress">
+					<text class="xj">现金12000</text>
+					<text class="yb">鱼币14000</text>
+				</view>
+			</view>
+		</view>
+		<view style="display: flex;justify-content: center;padding: 30rpx 0;" @click="navTo('/pages/integralPages/statisticsList/fishCurrency')">
+			<view class="progress-list">
+				<view>鱼币交易</view>
+				<view class="progress" style="background-color: #F5DEC6;">
+					<text class="xj1">现金12000</text>
+					<text class="yb">鱼币14000</text>
+				</view>
+			</view>
+		</view>
+		<view style="display: flex;justify-content: center;padding: 30rpx 0;" @click="navTo('/pages/integralPages/statisticsList/team')">
+			<view class="progress-list">
+				<view>团队人数</view>
+				<view class="progress" style="background-color: #CDDDEF;">
+					<text class="xj2">现金12000</text>
+					<text class="yb">鱼币14000</text>
+				</view>
+			</view>
+		</view>
+		<view style="display: flex;justify-content: center;padding: 30rpx 0;" @click="navTo('/pages/integralPages/statisticsList/teamAchievement')">
+			<view class="progress-list">
+				<view>团队业绩</view>
+				<view class="progress" style="background-color: #C6B8B8;">
+					<text class="xj3">现金12000</text>
+					<text class="yb">鱼币14000</text>
+				</view>
+			</view>
+		</view>
+	</view>
+	<Footer :num = "num"></Footer>
+	</view>
+</template>
+
+<script>
+	import Footer from "../../components/footer.vue"
+	export default {
+		components:{
+			Footer
+		},
+		data() {
+			return {
+				num : 2
+			};
+		},
+		onLoad(options) {
+			console.log(options)
+		},
+		methods:{
+			navTo(url){
+				uni.navigateTo({
+					url:url
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+	.vip-box {
+		.progress-list {
+			display: flex;
+			align-items: center;
+
+			.progress {
+				height: 37rpx;
+				border-radius: 37rpx;
+				width: 564rpx;
+				background-color: #D8D8D8;
+				position: relative;
+				margin-left: 30rpx;
+
+				>text {
+					position: absolute;
+					line-height: 37rpx;
+				}
+				> text:nth-child(1){
+					color: #FFFFFF;
+					font-size: 22rpx;
+					padding-left: 40rpx;
+					left: 0;
+					// width: 120px;
+					height: 100%;
+					border-radius: 37rpx;
+				}
+
+				.xj {
+					width: 220rpx;
+					background-color: #606060;
+				}
+				.xj1{
+					width: 240rpx;
+					background-color: #DFA15A;
+				}
+				.xj2{
+					width: 350rpx;
+					background-color: #85B0E1;
+				}
+				.xj3{
+					width: 380rpx;
+					background-color: #897171;
+				}
+
+				.yb {
+					right: 10rpx;
+					font-size: 22rpx;
+				}
+			}
+		}
+
+		.list-box {
+			display: flex;
+			margin-top: 20rpx;
+			padding: 30rpx 0;
+
+			>view {
+				flex: 1;
+				text-align: center;
+
+				image {
+					width: 70rpx;
+					height: 70rpx;
+				}
+
+				text {
+					display: block;
+					text-align: center;
+				}
+
+				.vip-list-name {
+					color: #7B7B7B;
+					font-size: 26rpx;
+				}
+
+				.num {
+					font-size: 22rpx;
+					color: #000;
+					font-weight: bold;
+				}
+			}
+		}
+
+		.list-second {
+			display: flex;
+			border-top: 10rpx solid #F5F5F5;
+			border-bottom: 10rpx solid #F5F5F5;
+			padding: 30rpx 0;
+
+			>view {
+				flex: 1;
+				text-align: center;
+
+				.price {
+					font-size: 26rpx;
+					font-weight: bold;
+					margin-top: 18rpx;
+				}
+
+				.image-box {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					>text {
+						margin-left: 20rpx;
+						font-size: 28rpx;
+						color: #7B7B7B;
+					}
+				}
+
+				.image {
+					height: 40rpx;
+					width: 50rpx;
+				}
+
+				.image2 {
+					width: 37rpx;
+					height: 32rpx;
+					margin-top: 16px;
+				}
+
+				.one {
+					font-size: 28rpx;
+					color: #7B7B7B;
+				}
+			}
+		}
+	}
+</style>

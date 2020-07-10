@@ -1,0 +1,1119 @@
+<template>
+  <view>
+    <view v-if="!show">
+      <!-- 地址 -->
+      <navigator url="/pages/address/address?source=1"
+                 class="address-section"
+                 v-if="MoRenAddress">
+        <view class="order-content">
+          <text class="yticon icon-shouhuodizhi"></text>
+          <view class="cen">
+            <view class="top">
+              <text class="name">{{MoRenAddress.ShipTo}}</text>
+              <text class="mobile">{{MoRenAddress.CellPhone}}</text>
+            </view>
+            <text class="address">{{MoRenAddress.PCR}}{{MoRenAddress.Address}}</text>
+          </view>
+          <text class="yticon icon-you"></text>
+        </view>
+
+        <image class="a-bg"
+               src="../../static/a-bg.png"></image>
+      </navigator>
+
+      <navigator url="/pages/address/address?source=1"
+                 class="address-section"
+                 v-else>
+        <view class="order-content">
+          <text class="yticon icon-shouhuodizhi"></text>
+          <view class="cen">
+            <text>请输入地址</text>
+          </view>
+          <text class="yticon icon-you"></text>
+        </view>
+
+        <image class="a-bg"
+               src="../../static/a-bg.png"></image>
+      </navigator>
+
+      <view class="goods-section">
+        <!--    <view class="g-header b-b">
+	           <image class="logo"
+	                  src="http://duoduo.qibukj.cn/./Upload/Images/20190321/201903211727515.png"></image>
+	           <text class="name">西城小店铺</text>
+	         </view> -->
+        <!-- 商品列表 -->
+        <!-- 			<view class="g-item">
+	   				<image src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=756705744,3505936868&fm=11&gp=0.jpg"></image>
+	   				<view class="right">
+	   					<text class="title clamp">古黛妃 短袖t恤女夏装2019新款</text>
+	   					<text class="spec">春装款 L</text>
+	   					<view class="price-box">
+	   						<text class="price">￥17.8</text>
+	   						<text class="number">x 1</text>
+	   					</view>
+	   				</view>
+	   			</view> -->
+        <view class="g-item"
+              v-for="(item,index) in shopList"
+              :key="index">
+          <image :src='item.ThumbnailUrl310'></image>
+          <view class="right">
+            <text class="title clamp">{{item.Name}}</text>
+            <text class="spec"
+                  v-for="(itemaa,indexaa) in item.arr"
+                  :key='indexaa'>{{itemaa.name}}:{{itemaa.list}}</text>
+            <view class="price-box">
+              <text class="price">￥{{item.MemberPrice}}</text>
+              <text class="number">x {{item.Quantity}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 优惠明细 -->
+      <view class="yt-list">
+      </view>
+      <!-- 金额明细 -->
+      <view class="yt-list">
+        <view class="yt-list-cell b-b">
+          <text class="cell-tit clamp">商品金额</text>
+          <text class="cell-tip">￥{{price}}</text>
+        </view>
+        <view class="yt-list-cell b-b">
+          <text class="cell-tit clamp">运费</text>
+          <text class="cell-tip">免运费</text>
+        </view>
+        <view class="yt-list-cell desc-cell">
+          <text class="cell-tit clamp">备注</text>
+          <input class="desc"
+                 type="text"
+                 v-model="desc"
+                 placeholder="请填写备注信息"
+                 placeholder-class="placeholder" />
+        </view>
+      </view>
+
+      <view class="pay-type-list"
+            v-for="(item,index) in buyList"
+            :key="index">
+        <view class="type-item b-b"
+              @click="changePayType(item.payType,index)">
+          <image :src="item.index == chooseTarget ? item.img1 : item.img"
+                 mode=""
+                 style="height: 30rpx;width: 30rpx;margin-right: 20rpx;"></image>
+          <!-- <image src="../../static/checked.png" mode="" style="height: 30rpx;width: 30rpx;margin-right: 20rpx;" v-else></image> -->
+          <view class="con">
+            <text class="tit">{{item.name}}</text>
+            <!-- <text>推荐使用余额支付</text> -->
+          </view>
+          <label class="radio"
+                 v-if="item.price">
+            剩余{{item.price}}元
+          </label>
+        </view>
+      </view>
+
+      <!-- 底部 -->
+      <view class="footer">
+        <view class="price-content">
+          <text>实付款</text>
+          <text class="price-tip">￥</text>
+          <text class="price">{{price}}</text>
+        </view>
+        <text class="submit"
+              @click="submit">提交订单</text>
+      </view>
+    </view>
+
+    <passkeyborad :show="show"
+                  :price="price"
+                  @close="close"
+                  @getpassword="getpassword"
+                  :fc="flag"
+                  :payWay="buyList[chooseTarget].text"></passkeyborad>
+  </view>
+</template>
+
+<script>
+import passkeyborad from '@/components/yzc-paykeyboard/yzc-paykeyboard.vue';
+export default {
+  components: {
+    passkeyborad
+  },
+  data() {
+    return {
+      buyList: [{
+        name: "余额支付",
+        index: 0,
+        img: "../../static/check.png",
+        img1: "../../static/checked.png",
+        payType: 77,
+        price: "200",
+        tip: "余额不足",
+        text: "余额"
+      }, {
+        name: "FC支付",
+        index: 1,
+        img: "../../static/check.png",
+        img1: "../../static/checked.png",
+        payType: 66,
+        price: "100",
+        tip: "FC不足",
+        text: "FC"
+      },
+      // #ifdef H5 || MP-WEIXIN
+      {
+        name: "微信支付",
+        index: 2,
+        img: "../../static/check.png",
+        img1: "../../static/checked.png",
+        payType: 88,
+        price: ""
+      },
+      // #endif
+      // #ifdef APP-PLUS
+      {
+        name: "微信支付",
+        index: 2,
+        img: "../../static/check.png",
+        img1: "../../static/checked.png",
+        payType: 88,
+        price: ""
+      },
+      {
+        name: "支付宝支付",
+        index: 3,
+        img: "../../static/check.png",
+        img1: "../../static/checked.png",
+        payType: 55,
+        price: ""
+      }
+        // #endif
+      ],
+      flag: true,
+      maskState: 0, //优惠券面板显示状态
+      desc: '', //备注
+      payType: 77, //88微信 99支付宝
+      ysChecked: 1,
+      // orderDetail: '',
+      MoRenAddress: {},
+      shopList: [],
+      price: null, //总金额
+      arrNUm: '', //数量数组
+      arrID: '', //id数组
+      userInfo: '', //用户信息
+      show: false,
+      getPsw: '',
+      // orderDetail:this.$store.state.shopList,
+      id: '',
+      cate: '',
+      OpenId: '',
+      chooseTarget: 0
+    }
+  },
+  onLoad(option) {
+    if (option.id) {
+      this.id = option.id
+      this.getOnce(option.id)
+      this.cate = 1 //立刻购买
+    } else {
+      this.price = Number(option.price);
+      this.cate = 0 //购车购买
+    }
+    // this.getShopDetail(orderId)//获取详情
+    //商品数据
+    //let data = JSON.parse(option.data);
+    //console.log(data);
+  },
+  onShow() {
+    this.getAddress()
+    this.getUserInfo()
+  },
+  methods: {
+    // 调用微信支付
+    async weixinPay() {
+      // console.log(plus.runtime.appid)
+      let orderInfo = await this.getOrderInfo();
+      console.log(orderInfo)
+      // console.log(orderInfo)
+      uni.requestPayment({
+        provider: 'wxpay',
+        orderInfo: orderInfo.data,
+        success: res => {
+          console.log('-------' + res + '---------')
+        },
+        fail: (e) => {
+          console.log("fail", e);
+          uni.showModal({
+            content: "支付失败,原因为: " + e.errMsg,
+            showCancel: false
+          })
+        },
+        complete: () => {
+          this.providerList[index].loading = false;
+        }
+      })
+    },
+    getOrderInfo() {
+      let appid = "";
+      // #ifdef APP-PLUS
+      appid = plus.runtime.appid;
+      // #endif
+      // let data = {
+      //   action: 'APPPay',
+      //   VoucherNumber: 'wxpay',
+      // }
+      // let res = await this.$api.api.payWay(res)
+      // console.log(res)
+      // let url = 'http://192.168.110.103:34668/api/WeiXinPay.ashx?VoucherNumber=wxpay' + '&action=APPPay'
+    },
+    async getOrder(VoucherNumber) {
+      let data = {
+        action: 'APPPay',
+        VoucherNumber: VoucherNumber,
+      }
+      let res = await this.$api.api.payWay(data)
+      console.log(res.data)
+      if (res.data.status == 'true') {
+        console.log(res)
+        let orderInfo = {
+          appid: res.data.appid,
+          partnerid: res.data.partnerid,
+          prepayid: res.data.prepay_id,
+          package: "Sign=WXPay",
+          nonceStr: res.data.nonceStr,
+          timeStamp: res.data.timeStamp,
+          sign: res.data.paySign
+        }
+
+        uni.requestPayment({
+          provider: 'wxpay',
+          orderInfo: orderInfo,
+          // _debug: 1,
+          success: res => {
+            console.log(res)
+          },
+          fail: (e) => {
+            console.log("fail", e);
+            uni.showModal({
+              content: "支付失败,原因为: " + e.errMsg,
+              showCancel: false
+            })
+          },
+        })
+      }
+    },
+    close() {
+      this.show = false
+    },
+    getpassword(val) {
+      this.getPsw = val
+      this.pay()
+    },
+    //得到用户信息
+    async getUserInfo() {
+      let param = {
+        action: 'GetMemberInfo'
+      }
+      let res = await this.$api.api.getUserInfo(param)
+      // console.log(res)
+      if (res.data.status == true) {
+        this.userInfo = res.data.Data
+        this.OpenId = res.data.Data.OpenId
+        this.buyList[0].price = this.userInfo.Points
+        this.buyList[1].price = this.userInfo.FishCoin
+        uni.setStorageSync('openId', this.OpenId)
+        // console.log(this.userInfo)
+      }
+    },
+    async getOnce(id) {
+      let data = {
+        action: 'GetCartLists',
+        categoryid: 1,
+        SkuId: id,
+        PageIndex: 1,
+        PageSize: 10
+      }
+      let res = await this.$api.api.getCartList(data);
+      if (res.data.status == true) {
+        let result = res.data.data[0]
+        result.LineItems.forEach((item, index) => {
+          item.ThumbnailUrl310 = this.$config.domain.api + item.ThumbnailUrl310
+        })
+        this.arrID = result.LineItems[0].SkuId
+        this.arrNUm = result.LineItems[0].Quantity
+        this.price = result.LineItems[0].SubTotal
+        this.shopList = result.LineItems
+      }
+    },
+    getAddress() {
+      if (!this.id) {
+        this.shopList = this.$store.state.getshop
+        let arrNUm = [] //数量集合
+        let arrId = [] //价格集合
+        this.shopList.forEach((item, index) => {
+          item.arr = []
+          for (var i = 0; i < item.Attributes.length; i++) {
+            item.obj = {}
+            item.obj.name = item.Attributes[i]
+            item.obj.list = item.AttributesValue[i]
+            item.arr.push(item.obj)
+          }
+          arrNUm.push(item.Quantity)
+          arrId.push(item.SkuId)
+        })
+        this.arrNUm = arrNUm.join(',')
+        this.arrID = arrId.join(',')
+      }
+      if (this.$store.state.saveAddress) {
+        this.MoRenAddress = this.$store.state.saveAddress
+      } else {
+        this.getMoRenAddress() //获取默认地址
+      }
+    },
+    //获取默认地址
+    async getMoRenAddress() {
+
+      let data = {
+        action: 'GetDefaultShippingAddress'
+      }
+      let res = await this.$api.api.getMoRenAddress(data)
+      if (res.data.status == true) {
+        this.MoRenAddress = res.data.data
+      }
+    },
+    // 得到详情
+    // async getShopDetail(orderId) {
+    //   let data = {
+    //     action: 'GetOrderInfoByID',
+    //     OrderId: orderId
+    //   }
+    //   let res = await this.$api.api.getShopDetail(data);
+    //   if (res.data.status == true) {
+    //     let result = res.data.Data;
+    //     result.ShippingRegion = result.ShippingRegion.replace(/,/g, "")
+    //     this.orderDetail = result
+    //   }
+    // },
+    //显示优惠券面板
+    toggleMask(type) {
+      let timer = type === 'show' ? 10 : 300;
+      let state = type === 'show' ? 1 : 0;
+      this.maskState = 2;
+      setTimeout(() => {
+        this.maskState = state;
+      }, timer)
+    },
+    numberChange(data) {
+      this.number = data.number;
+    },
+    changePayType(type, typeIndex) {
+      this.payType = type;
+      this.chooseTarget = this.buyList[typeIndex].index
+    },
+    pay() {
+      uni.showLoading({
+        title: '加载中...'
+      });
+      let param = {
+        TradePassword: this.getPsw,
+        CategoryId: this.cate,
+        action: 'Submmitorder',
+        PointNumber: 0, // 积分抵现  传空
+        selectCouponValue: '', // 选择优惠券  传空
+        Shippingcity: '', //选择的省市区域ID
+        shippingType: '', // 配送方式
+        paymentType: this.payType, //支付方式
+        couponCode: '', // 优惠码
+        redpagerid: '', //抵用券ID
+        shippingId: this.MoRenAddress.ShippingId, //收货地址ID
+        productSku: this.arrID, //产品规格ID
+        buyAmount: this.arrNUm, //购买数量
+        shiptoDate: '', //选择收货时间
+        groupbuyId: '', // 分组购买ID  传空
+        remark: this.desc, //备注
+        bargainDetialId: '', //砍价ID
+        limitedTimeDiscountId: 0, //支付方式名称
+        PaymentMethod: 0, //支付方式（线下支付时使用）
+        PaymentMethodName: '', // 支付方式名称
+        IDCardFront: '', //线下转账时身份证照片1
+        PaymentVoucher: '', // 线下转账交易凭证1
+        PayTimeYear: '', //线下支付，银行转账时，转账年
+        PayTimeMonth: '', //线下支付，银行转账时，转账月
+        PayTimeDate: '', //线下支付，银行转账时，转账日
+        PayTimeHours: '', //  线下支付，银行转账时，转账时
+        PayTimeMinute: '', //  线下支付，银行转账时，转账分
+        PayUserName: '', //  线下支付，银行转账时，转账人
+        ID2CardFront: '', // 线下转账时身份证照片2
+        Payment2Voucher: '', //  线下转账交易凭证2
+        Payment3Voucher: '', //  线下转账交易凭证3
+        Payment4Voucher: '', //  线下转账交易凭证4
+        Payment5Voucher: '', //  线下转账交易凭证5
+        PlaceBranch: '', //  放置分店  传0
+        randomnumber: new Date().getTime() //随机数  用于重复提交订单判断
+      }
+      this.$api.api.Submmitorder(param).then((res) => {
+        if (this.payType == 77) {
+          if (res.data.status == true) {
+            let OrderId = res.data.OrderId;
+            uni.hideLoading()
+            this.$api.msg('购买成功！！！')
+            setTimeout(function () {
+              uni.navigateBack({
+                delta: 1
+              })
+            }, 1000)
+          } else {
+            this.$api.msg(res.data.message)
+          }
+        }
+        // #ifdef H5 || MP-WEIXIN
+        if (this.payType == 88) {
+          if (res.data.status == true) {
+            let VoucherNumber = res.data.VoucherNumber;
+            let param = {
+              action: 'Pay',
+              VoucherNumber: VoucherNumber,
+              OpenId: this.OpenId
+            }
+            uni.hideLoading()
+            this.$api.api.payWay(param).then((res) => {
+              if (res.data.status == 'true') {
+                this.onBridgeReady(res.data)
+              }
+            })
+          } else {
+            // uni.navigateTo({
+            // 	url: "/pages/order/order?state=1"
+            // })
+            uni.hideLoading()
+            setTimeout(() => {
+              this.$api.msg(res.data.message)
+            }, 500)
+          }
+        }
+        // #endif
+        if (this.payType == 66) {
+          if (res.data.status == true) {
+            let OrderId = res.data.OrderId;
+            uni.hideLoading()
+            this.$api.msg('购买成功！！！')
+            setTimeout(function () {
+              uni.navigateBack({
+                delta: 1
+              })
+            }, 1000)
+          } else {
+            this.$api.msg(res.data.message)
+          }
+        }
+        // #ifdef APP-PLUS
+        if (this.payType == 88) {
+          if (res.data.status == true) {
+            let VoucherNumber = res.data.VoucherNumber
+            uni.hideLoading()
+            this.getOrder(VoucherNumber)
+          }
+        }
+        if (this.payType == 55) {
+          if (res.data.status == true) {
+            console.log(res.data)
+          }
+        }
+        // #endif
+      })
+    },
+    submit() {
+      // console.log(this.buyList[this.chooseTarget].text)
+      if (this.MoRenAddress == null) {
+        this.$api.msg('请填写地址')
+        return
+      }
+      // if (this.userInfo.Points < this.buyList[chooseTarget].price) {
+      // 	return this.$api.msg(this.buyList[chooseTarget].tip)
+      // }
+      // if (this.userInfo.FishCoin < this.buyList[chooseTarget].price) {
+      // 	return this.$api.msg(this.buyList[chooseTarget].tip)
+      // }
+      // if(this.chooseTarget){
+
+      // }
+      if (this.payType == 88) {
+        this.pay()
+        return
+      }
+      if (this.payType == 55) {
+        this.pay()
+        return
+      }
+      if (!this.userInfo.TradePassword) {
+        uni.navigateTo({
+          url: "/pages/set/payPsw"
+        })
+        return
+      }        // let obj = orderInfo
+      // let orderInfo = {
+      //   appid: "wxbb851b0e79cbe797",
+      //   nonceStr: res.data.nonceStr,
+      //   package: 'Sign=WXPay',
+      //   partnerid: res.data.partnerid,
+      //   prepayid: res.data.prepay_id,
+      //   // paySign: res.data.paySign,
+      //   sign: res.data.paySign,
+      //   timeStamp: Number(res.data.timeStamp)
+      // }
+      // orderInfo = JSON.stringify(orderInfo)
+      console.log(orderInfo)
+      // uni.requestPayment({
+      //   provider: 'wxpay',
+      //   timeStamp: res.data.timestamp,
+      //   nonceStr: res.data.noncestr,
+      //   package: 'Sign=WXPay',
+      //   signType: "MD5",
+      //   paySign: res.data.paySign,
+      //   orderInfo: JSON.stringify({
+      //     appid: res.data.appid,
+      //     partnerid: res.data.partnerid,
+      //     prepayid: res.data.prepay_id,
+      //     package: 'Sign=WXPay',
+      //     nonceStr: res.data.nonceStr,
+      //     timeStamp: res.data.timeStamp,
+      //     sign: res.data.paySign
+      //   }),
+      if (!this.show) {
+        this.show = true
+        return
+      }
+    },
+    onBridgeReady(item) {
+      WeixinJSBridge.invoke(
+        'getBrandWCPayRequest', {
+        "appId": item.appid, //公众号名称，由商户传入     
+        "timeStamp": item.timeStamp, //时间戳，自1970年以来的秒数     
+        "nonceStr": item.nonceStr, //随机串     
+        "package": "prepay_id=" + item.prepay_id,
+        "signType": "MD5", //微信签名方式：     
+        "paySign": item.paySign //微信签名 
+      },
+        function (res) {
+          if (res.err_msg == "get_brand_wcpay_request:ok") {
+            // 使用以上方式判断前端返回,微信团队郑重提示：
+            //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+            uni.navigateTo({
+              url: "/pages/money/paySuccess"
+            })
+          } else {
+            this.$ap.msg('取消成功')
+            setTimeout(function () {
+              uni.navigateTo({
+                url: "/pages/order/order?state=1"
+              })
+            }, 800)
+          }
+        });
+    },
+    // if (typeof WeixinJSBridge == "undefined"){
+    //    if( document.addEventListener ){
+    //        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+    //    }else if (document.attachEvent){
+    //        document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+    //        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+    //    }
+    // }else{
+    //    onBridgeReady();
+    // }
+
+    stopPrevent() { }
+  }
+}
+</script>
+
+<style lang="scss">
+page {
+  background: $page-color-base;
+  padding-bottom: 100upx;
+}
+
+.pay-type-list {
+  margin-top: 20upx;
+  background-color: #fff;
+  padding-left: 30upx;
+
+  .type-item {
+    height: 120upx;
+    padding: 20upx 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 30upx;
+    font-size: 30upx;
+    position: relative;
+  }
+
+  .icon {
+    width: 100upx;
+    font-size: 52upx;
+  }
+
+  .icon-erjiye-yucunkuan {
+    color: #fe8e2e;
+  }
+
+  .icon-weixinzhifu {
+    color: #36cb59;
+  }
+
+  .icon-alipay {
+    color: #01aaef;
+  }
+
+  .tit {
+    font-size: $font-lg;
+    color: $font-color-dark;
+    margin-bottom: 4upx;
+  }
+
+  .con {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    font-size: $font-sm;
+    color: $font-color-light;
+  }
+}
+
+.address-section {
+  padding: 30upx 0;
+  background: #fff;
+  position: relative;
+
+  .order-content {
+    display: flex;
+    align-items: center;
+  }
+
+  .icon-shouhuodizhi {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90upx;
+    color: #888;
+    font-size: 44upx;
+  }
+
+  .cen {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    font-size: 28upx;
+    color: $font-color-dark;
+  }
+
+  .name {
+    font-size: 34upx;
+    margin-right: 24upx;
+  }
+
+  .address {
+    margin-top: 16upx;
+    margin-right: 20upx;
+    color: $font-color-light;
+  }
+
+  .icon-you {
+    font-size: 32upx;
+    color: $font-color-light;
+    margin-right: 30upx;
+  }
+
+  .a-bg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    height: 5upx;
+  }
+}
+
+.goods-section {
+  margin-top: 16upx;
+  background: #fff;
+  padding-bottom: 1px;
+
+  .g-header {
+    display: flex;
+    align-items: center;
+    height: 84upx;
+    padding: 0 30upx;
+    position: relative;
+  }
+
+  .logo {
+    display: block;
+    width: 50upx;
+    height: 50upx;
+    border-radius: 100px;
+  }
+
+  .name {
+    font-size: 30upx;
+    color: $font-color-base;
+    margin-left: 24upx;
+  }
+
+  .g-item {
+    display: flex;
+    margin: 20upx 30upx;
+
+    image {
+      flex-shrink: 0;
+      display: block;
+      width: 140upx;
+      height: 140upx;
+      border-radius: 4upx;
+    }
+
+    .right {
+      flex: 1;
+      padding-left: 24upx;
+      overflow: hidden;
+    }
+
+    .title {
+      font-size: 30upx;
+      color: $font-color-dark;
+    }
+
+    .spec {
+      font-size: 26upx;
+      color: $font-color-light;
+    }
+
+    .price-box {
+      display: flex;
+      align-items: center;
+      font-size: 32upx;
+      color: $font-color-dark;
+      padding-top: 10upx;
+
+      .price {
+        margin-bottom: 4upx;
+      }
+
+      .number {
+        font-size: 26upx;
+        color: $font-color-base;
+        margin-left: 20upx;
+      }
+    }
+
+    .step-box {
+      position: relative;
+    }
+  }
+}
+
+.yt-list {
+  margin-top: 16upx;
+  background: #fff;
+}
+
+.yt-list-cell {
+  display: flex;
+  align-items: center;
+  padding: 10upx 30upx 10upx 40upx;
+  line-height: 70upx;
+  position: relative;
+
+  &.cell-hover {
+    background: #fafafa;
+  }
+
+  &.b-b:after {
+    left: 30upx;
+  }
+
+  .cell-icon {
+    height: 32upx;
+    width: 32upx;
+    font-size: 22upx;
+    color: #fff;
+    text-align: center;
+    line-height: 32upx;
+    background: #f85e52;
+    border-radius: 4upx;
+    margin-right: 12upx;
+
+    &.hb {
+      background: #ffaa0e;
+    }
+
+    &.lpk {
+      background: #3ab54a;
+    }
+  }
+
+  .cell-more {
+    align-self: center;
+    font-size: 24upx;
+    color: $font-color-light;
+    margin-left: 8upx;
+    margin-right: -10upx;
+  }
+
+  .cell-tit {
+    flex: 1;
+    font-size: 26upx;
+    color: $font-color-light;
+    margin-right: 10upx;
+  }
+
+  .cell-tip {
+    font-size: 26upx;
+    color: $font-color-dark;
+
+    &.disabled {
+      color: $font-color-light;
+    }
+
+    &.active {
+      color: $base-color;
+    }
+
+    &.red {
+      color: $base-color;
+    }
+  }
+
+  &.desc-cell {
+    .cell-tit {
+      max-width: 90upx;
+    }
+  }
+
+  .desc {
+    flex: 1;
+    font-size: $font-base;
+    color: $font-color-dark;
+  }
+}
+
+/* 支付列表 */
+.pay-list {
+  padding-left: 40upx;
+  margin-top: 16upx;
+  background: #fff;
+
+  .pay-item {
+    display: flex;
+    align-items: center;
+    padding-right: 20upx;
+    line-height: 1;
+    height: 110upx;
+    position: relative;
+  }
+
+  .icon-weixinzhifu {
+    width: 80upx;
+    font-size: 40upx;
+    color: #6bcc03;
+  }
+
+  .icon-alipay {
+    width: 80upx;
+    font-size: 40upx;
+    color: #06b4fd;
+  }
+
+  .icon-xuanzhong2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60upx;
+    height: 60upx;
+    font-size: 40upx;
+    color: $base-color;
+  }
+
+  .tit {
+    font-size: 32upx;
+    color: $font-color-dark;
+    flex: 1;
+  }
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 995;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 90upx;
+  justify-content: space-between;
+  font-size: 30upx;
+  background-color: #fff;
+  z-index: 998;
+  color: $font-color-base;
+  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+
+  .price-content {
+    padding-left: 30upx;
+  }
+
+  .price-tip {
+    color: $base-color;
+    margin-left: 8upx;
+  }
+
+  .price {
+    font-size: 36upx;
+    color: $base-color;
+  }
+
+  .submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 280upx;
+    height: 100%;
+    color: #fff;
+    font-size: 32upx;
+    background-color: #323f6c;
+  }
+}
+
+.active {
+  background-color: #323f6c;
+}
+
+/* 优惠券面板 */
+.mask {
+  display: flex;
+  align-items: flex-end;
+  position: fixed;
+  left: 0;
+  top: var(--window-top);
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0);
+  z-index: 9995;
+  transition: 0.3s;
+
+  .mask-content {
+    width: 100%;
+    min-height: 30vh;
+    max-height: 70vh;
+    background: #f3f3f3;
+    transform: translateY(100%);
+    transition: 0.3s;
+    overflow-y: scroll;
+  }
+
+  &.none {
+    display: none;
+  }
+
+  &.show {
+    background: rgba(0, 0, 0, 0.4);
+
+    .mask-content {
+      transform: translateY(0);
+    }
+  }
+}
+
+/* 优惠券列表 */
+.coupon-item {
+  display: flex;
+  flex-direction: column;
+  margin: 20upx 24upx;
+  background: #fff;
+
+  .con {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 120upx;
+    padding: 0 30upx;
+
+    &:after {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      content: "";
+      width: 100%;
+      height: 0;
+      border-bottom: 1px dashed #f3f3f3;
+      transform: scaleY(50%);
+    }
+  }
+
+  .left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    overflow: hidden;
+    height: 100upx;
+  }
+
+  .title {
+    font-size: 32upx;
+    color: $font-color-dark;
+    margin-bottom: 10upx;
+  }
+
+  .time {
+    font-size: 24upx;
+    color: $font-color-light;
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 26upx;
+    color: $font-color-base;
+    height: 100upx;
+  }
+
+  .price {
+    font-size: 44upx;
+    color: $base-color;
+
+    &:before {
+      content: "￥";
+      font-size: 34upx;
+    }
+  }
+
+  .tips {
+    font-size: 24upx;
+    color: $font-color-light;
+    line-height: 60upx;
+    padding-left: 30upx;
+  }
+
+  .circle {
+    position: absolute;
+    left: -6upx;
+    bottom: -10upx;
+    z-index: 10;
+    width: 20upx;
+    height: 20upx;
+    background: #f3f3f3;
+    border-radius: 100px;
+
+    &.r {
+      left: auto;
+      right: -6upx;
+    }
+  }
+}
+</style>

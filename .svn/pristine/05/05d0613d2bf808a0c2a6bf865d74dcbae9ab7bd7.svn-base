@@ -1,0 +1,39 @@
+<template>
+	<view>
+		
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				id:''
+			};
+		},
+		onLoad(options) {
+			this.id = options.id
+			this.getInfo()
+		},
+		methods:{
+			async getInfo(){
+				let data = {
+					FishOrderId:this.id
+				}
+				let StringData = JSON.stringify(data)
+				let param = {
+					action:"ReadFishOrderPayInformation",
+					data:StringData
+				}
+				let res = await this.$api.api.getFish(param)
+				if(res.data.status == true){
+					
+				}
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+
+</style>

@@ -1,0 +1,364 @@
+<template>
+  <view>
+    <view class="vip-box">
+      <!-- 第一个列表 -->
+      <view class="list-box">
+        <view>
+          <image src="../../static/vip/list4.png"
+                 mode=""></image>
+          <text class="vip-list-name">发行总量</text>
+          <text class="num">10000.000</text>
+        </view>
+        <view>
+          <image src="../../static/vip/list1.png"
+                 mode=""></image>
+          <text class="vip-list-name">剩余总数</text>
+          <text class="num">10000.000</text>
+        </view>
+        <view>
+          <image src="../../static/vip/list2.png"
+                 mode=""></image>
+          <text class="vip-list-name">流通总数</text>
+          <text class="num">10000.000</text>
+        </view>
+      </view>
+      <!-- 第二个列表 -->
+      <view>
+        <view class="list-second">
+          <view>
+            <view class="image-box">
+              <image src="../../static/vip/jiageprice1.png"
+                     mode=""
+                     class="image"></image><text>今日价</text>
+            </view>
+            <view class="price">{{ price.todayPrice }}</view>
+          </view>
+          <view>
+            <view class="image-box">
+              <image src="../../static/vip/jiageprice2.png"
+                     mode=""
+                     class="image"></image><text>昨日价</text>
+            </view>
+            <view class="price">{{ price.yesterdayPrice }}</view>
+          </view>
+          <view>
+            <view class="one">历史价</view>
+            <image src="../../static/vip/tubiaozhexiantu.png"
+                   mode=""
+                   class="image2"></image>
+          </view>
+        </view>
+      </view>
+      <!-- 第三个列表 -->
+      <view>
+        <view class="list-second"
+              style="border-top: none;">
+          <view>
+            <view class="image-box">
+              <image src="../../static/vip/xiangmuguanlifuzhi.png"
+                     mode=""
+                     class="image"></image><text>今日量</text>
+            </view>
+            <view class="price">{{ number.todayNumber }}</view>
+          </view>
+          <view>
+            <view class="image-box">
+              <image src="../../static/vip/xiangmuguanlifuzhi1.png"
+                     mode=""
+                     class="image"></image><text>昨日量</text>
+            </view>
+            <view class="price">{{ number.yesterdayNumber }}</view>
+          </view>
+          <view>
+            <view class="one">历史量</view>
+            <image src="../../static/vip/list3.png"
+                   mode=""
+                   class="image2"></image>
+          </view>
+        </view>
+      </view>
+      <!-- 第四个进度条 -->
+      <view style="display: flex; justify-content: center; padding: 30rpx 0;"
+            @click="navTo('/pages/integralPages/statisticsList/consumption')">
+        <view class="progress-list">
+          <view>消费情况</view>
+          <view class="progress">
+            <text class="xj progress-c"
+                  :style="{width: trade1 + '%'}">现金{{trade.incomeFishNumber}}</text>
+            <!-- <text class="yb"
+                  :style="{width: trade2 + '%'}">鱼币{{trade.outputFishNumber}}</text> -->
+            <text class="yb"
+                  :style="{width: trade2 + '%'}">鱼币{{trade.outputFishNumber}}</text>
+          </view>
+        </view>
+      </view>
+      <view style="display: flex; justify-content: center; padding: 30rpx 0;"
+            @click="navTo('/pages/integralPages/statisticsList/fishCurrency')">
+        <view class="progress-list">
+          <view>鱼币交易</view>
+          <view class="progress"
+                style="background-color: #f5dec6;">
+            <text class="xj1 progress-c"
+                  :style="{width: fishTrade1 + '%'}">现金{{fishTrade.incomeBalance}}</text>
+            <text class="yb"
+                  :style="{width: fishTrade2 + '%'}">鱼币{{fishTrade.outputBalance}}</text>
+          </view>
+        </view>
+      </view>
+      <view style="display: flex; justify-content: center; padding: 30rpx 0;"
+            @click="navTo('/pages/integralPages/statisticsList/team')">
+        <view class="progress-list">
+          <view>团队人数</view>
+          <view class="progress"
+                style="background-color: #cdddef;">
+            <text class="xj2 progress-c"
+                  :style="{width: teamPeople1 + '%'}">现金{{teamPeople.Effective}}</text>
+            <text class="yb"
+                  :style="{width: teamPeople2 + '%'}">鱼币{{teamPeople.Invalid}}</text>
+          </view>
+        </view>
+      </view>
+      <view style="display: flex; justify-content: center; padding: 30rpx 0;"
+            @click="navTo('/pages/integralPages/statisticsList/teamAchievement')">
+        <view class="progress-list">
+          <view>团队业绩</view>
+          <view class="progress"
+                style="background-color: #c6b8b8;">
+            <text class="xj3 progress-c"
+                  :style="{width: teamCahievement1 + '%'}">现金{{teamCahievement.Achieved}}</text>
+            <text class="yb"
+                  :style="{width: teamCahievement2 + '%'}">鱼币{{teamCahievement.NotAchieved}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <Footer :num="num"></Footer>
+  </view>
+</template>
+
+<script>
+import Footer from '../../components/footer.vue';
+export default {
+  components: {
+    Footer,
+  },
+  data() {
+    return {
+      num: 2,
+      // 发行总量
+      issueObj: {},
+      // 今日价格
+      price: {},
+      // 今日量
+      number: {},
+      // 消费情况
+      trade: {},
+      // 鱼币交易
+      fishTrade: {},
+      // 团队人数
+      teamPeople: {},
+      // 团队业绩
+      teamCahievement: {},
+      // 消费情况1
+      trade1: '',
+      // 消费情况2
+      trade2: '',
+      // 鱼币交易1
+      fishTrade1: '',
+      // 鱼币交易2
+      fishTrade2: '',
+      // 团队人数1
+      teamPeople1: '',
+      // 团队人数2
+      teamPeople2: '',
+      // 团队的业绩1
+      teamCahievement1: '',
+      // 团队的业绩2
+      teamCahievement2: ''
+    };
+  },
+  onLoad(options) {
+    console.log(options);
+    // 获取统计分析的数据
+    this.getTotal();
+  },
+  methods: {
+    // 获取统计分析的数据
+    async getTotal() {
+      let data = {
+        action: 'FishStatistics',
+      };
+      let res = await this.$api.api.total(data);
+      console.log(res.data);
+      if (res.data.status == true) {
+        this.issueObj = res.data.issue;
+        this.price = res.data.price;
+        this.number = res.data.number;
+        this.trade = res.data.trade;
+        this.fishTrade = res.data.fishTrade;
+        this.teamPeople = res.data.teamPeople;
+        this.teamCahievement = res.data.teamCahievement;
+        var a = parseFloat(this.trade.incomeFishNumber) + parseFloat(this.trade.outputFishNumber)
+        this.trade1 = this.trade.incomeFishNumber / a * 100
+        this.trade2 = this.trade.outputFishNumber / a * 100
+        var b = parseFloat(this.fishTrade.incomeBalance) + parseFloat(this.trade.outputBalance)
+        this.fishTrade1 = this.fishTrade.incomeBalance / b * 100
+        this.fishTrade2 = this.fishTrade.outputBalance / b * 100
+        var c = parseFloat(this.teamPeople.Effective) + parseFloat(this.teamPeople.Invalid)
+        this.teamPeople1 = this.teamPeople.Effective / c * 100
+        this.teamPeople2 = this.teamPeople.Invalid / c * 100
+        var d = parseFloat(this.teamCahievement.Achieved) + parseFloat(this.teamCahievement.NotAchieved)
+        this.teamCahievement1 = this.teamCahievement.Achieved / d * 100
+        this.teamCahievement2 = this.teamCahievement.NotAchieved / d * 100
+      }
+    },
+    navTo(url) {
+      uni.navigateTo({
+        url: url,
+      });
+    },
+  },
+};
+</script>
+
+<style lang="scss">
+.vip-box {
+  .progress-list {
+    display: flex;
+    align-items: center;
+
+    .progress {
+      height: 37rpx;
+      border-radius: 37rpx;
+      width: 564rpx;
+      background-color: #d8d8d8;
+      position: relative;
+      margin-left: 30rpx;
+      overflow: hidden; //超出一行文字自动隐藏
+      text-overflow: ellipsis; //文字隐藏后添加省略号
+      white-space: nowrap; //强制不换行
+      > text {
+        position: absolute;
+        line-height: 37rpx;
+      }
+      > text:nth-child(1) {
+        color: #ffffff;
+        font-size: 22rpx;
+        padding-left: 40rpx;
+        left: 0;
+        // width: 120px;
+        height: 100%;
+        border-radius: 37rpx;
+      }
+
+      .xj {
+        width: 200rpx;
+        background-color: #606060;
+      }
+      .xj1 {
+        width: 200rpx;
+        background-color: #dfa15a;
+      }
+      .xj2 {
+        width: 200rpx;
+        background-color: #85b0e1;
+      }
+      .xj3 {
+        width: 200rpx;
+        background-color: #897171;
+      }
+
+      .yb {
+        right: -12rpx;
+        font-size: 22rpx;
+        overflow: hidden; //超出一行文字自动隐藏
+        text-overflow: ellipsis; //文字隐藏后添加省略号
+        white-space: nowrap; //强制不换行
+      }
+      .progress-c {
+        overflow: hidden; //超出一行文字自动隐藏
+        text-overflow: ellipsis; //文字隐藏后添加省略号
+        white-space: nowrap; //强制不换行
+      }
+    }
+  }
+
+  .list-box {
+    display: flex;
+    margin-top: 20rpx;
+    padding: 30rpx 0;
+
+    > view {
+      flex: 1;
+      text-align: center;
+
+      image {
+        width: 70rpx;
+        height: 70rpx;
+      }
+
+      text {
+        display: block;
+        text-align: center;
+      }
+
+      .vip-list-name {
+        color: #7b7b7b;
+        font-size: 26rpx;
+      }
+
+      .num {
+        font-size: 22rpx;
+        color: #000;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .list-second {
+    display: flex;
+    border-top: 10rpx solid #f5f5f5;
+    border-bottom: 10rpx solid #f5f5f5;
+    padding: 30rpx 0;
+
+    > view {
+      flex: 1;
+      text-align: center;
+
+      .price {
+        font-size: 26rpx;
+        font-weight: bold;
+        margin-top: 18rpx;
+      }
+
+      .image-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        > text {
+          margin-left: 20rpx;
+          font-size: 28rpx;
+          color: #7b7b7b;
+        }
+      }
+
+      .image {
+        height: 40rpx;
+        width: 50rpx;
+      }
+
+      .image2 {
+        width: 37rpx;
+        height: 32rpx;
+        margin-top: 16px;
+      }
+
+      .one {
+        font-size: 28rpx;
+        color: #7b7b7b;
+      }
+    }
+  }
+}
+</style>

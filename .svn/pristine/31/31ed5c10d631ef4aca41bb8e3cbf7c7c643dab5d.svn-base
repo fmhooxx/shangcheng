@@ -1,0 +1,153 @@
+<template>
+	<view class="recharge-wrap">
+		<view class="recharge-wrap-hd">
+			<view class="wrapper" v-for="(item,index) in payWay" :key='index' :class="item.checked? 'chooseClass' : ''" @click="choose(index)">
+				<image :src="item.url" mode=""></image>
+				<text>{{item.name}}</text>
+			</view>
+		</view>
+		<view class="local"><input type="text" placeholder="请输入充值金额 :"><text class="fc">FC</text></view>
+		<view class="submit">充值</view>
+		<!-- 占位符 -->
+		<view class="full"></view>
+		<view class="czList" @click="jump('./rechargeDetail')">
+			<view class="left">
+				<image src="../../static/vip/mingxi-2.png" mode="" style="width: 50rpx;height: 50rpx;"></image>
+				<text>充值明细</text>
+			</view>
+			<view class="right"><image src="../../static/vip/right.png" mode=""></image></view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				payWay:[
+					{
+						id:0,
+						name:'支付宝',
+						url:'../../static/vip/pay3.png',
+						checked:true
+					},
+					{
+						id:1,
+						name:'微信',
+						url:'../../static/vip/pay2.png',
+						cheked:false
+					}
+				]
+			};
+		},
+		methods:{
+			jump(url){
+				uni.navigateTo({
+					url:url
+				})
+			},
+			choose(index){
+				for(var i in this.payWay){
+					var obj = this.payWay[i]
+					obj.checked = index == i
+				}
+			}
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.recharge-wrap{
+		.recharge-wrap-hd{
+			padding: 46rpx 20rpx;
+			display: flex;
+			justify-content: space-between;
+			> view{
+				width:339rpx;
+				height:82rpx;
+				border-radius:9rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			.chooseClass{
+				box-shadow:0px 0px 10px 0px rgba(205,205,205,0.5);
+				color: #FFFFFF;
+				background-color: #223041 !important;
+			}
+			.wrapper{
+				background-color: #F8F8F8;
+				background:rgba(248,248,248,1);
+			}
+			image{
+				height: 45rpx;
+				width: 44rpx;
+				margin-right: 15rpx;
+			}
+		}
+		.local {
+			border: 1rpx solid #BBBBBB;
+			height: 80rpx;
+			padding: 0 10rpx;
+			font-size: 28rpx;
+			position: relative;
+			border-radius: 15rpx;	
+			width: 710rpx;
+			margin: 0 auto;
+			input {
+				width: 100%;
+				height: 100%;
+				font-size: 28rpx;
+			}
+		}
+		.fc {
+			position: absolute;
+			right: 20rpx;
+			top: 20%;
+			color: #CF3E2D;
+			font-size: 28rpx;
+		}
+		.submit{
+			width:711rpx;
+			height:82rpx;
+			background:rgba(34,48,65,1);
+			border-radius:9rpx;
+			color: #223041;
+			margin: 46rpx auto;
+			color: #FFFFFF;
+			font-size: 32rpx;
+			text-align: center;
+			line-height: 82rpx;
+		}
+		.full{
+			height: 11rpx;
+			width: 100%;
+			background-color: #F5F5F5;
+		}
+		.czList{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 50rpx 30rpx;
+			.left{
+				display: flex;
+				align-items: center;
+				image{
+					height: 58rpx;
+					width: 58rpx;
+					margin-right: 30rpx;
+				}
+				text{
+					font-size: 28rpx;
+					color: #2D2D2D;
+				}
+			}
+			.right{
+				image{
+					height: 34rpx;
+					width: 34rpx;
+				}
+			}
+		}
+	}
+</style>

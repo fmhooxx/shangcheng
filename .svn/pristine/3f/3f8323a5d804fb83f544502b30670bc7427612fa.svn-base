@@ -1,0 +1,130 @@
+<template>
+  <view>
+    <view class="swiper-container">
+      <!-- <view class="swiper-wrapper" style="display: flex;text-align: center;justify-content: center;"> -->
+      <!-- 	<view class="swiper-slide"><image src="../../../static/temp/ad2.jpg" mode=""></image></view>
+				<view class="swiper-slide"><image src="../../../static/temp/ad2.jpg" mode=""></image></view>
+				<view class="swiper-slide"><image src="../../../static/temp/ad2.jpg" mode=""></image></view> -->
+      <!-- <view class="swiper-slide" style="background-image:url(../../../../../static/user-bg.jpg)"></view> -->
+      <!-- <view class="swiper-slide" style="background-image:url(../../../../../static/user-bg.jpg)"></view>
+				<view class="swiper-slide" style="background-image:url(../../../../../static/user-bg.jpg)"></view>
+				<view class="swiper-slide" style="background-image:url(../../../../../static/user-bg.jpg)"></view>
+				<view class="swiper-slide" style="background-image:url(../../../../../static/user-bg.jpg)"></view>
+				<view class="swiper-slide" style="background-image:url(../../../../../static/user-bg.jpg)"></view>
+				<view class="swiper-slide" style="background-image:url(../../../../../static/user-bg.jpg)"></view>
+				<view class="swiper-slide" style="background-image:url(../../../../../static/user-bg.jpg)"></view>
+				<view class="swiper-slide" style="background-image:url(../../../../../static/user-bg.jpg)"></view> -->
+      <!-- </view> -->
+      <!-- Add Pagination -->
+      <!-- <view class="swiper-pagination"></view> -->
+    </view>
+    <view class="center">
+      <text>市场行情</text>
+
+    </view>
+    <view class="flex-space-around">
+      <view class="flex"><text>成交额</text>
+        <view class="flex-t">
+          <image src="/static/selec02.png"></image>
+          <image src="/static/select01.png"></image>
+        </view>
+      </view>
+
+      <view class="flex"><text>最新价</text>
+        <view class="flex-t">
+          <image src="/static/selec02.png"></image>
+          <image src="/static/select01.png"></image>
+        </view>
+      </view>
+      <view class="flex"><text>涨跌幅</text>
+        <view class="flex-t">
+          <image src="/static/selec02.png"></image>
+          <image src="/static/select01.png"></image>
+        </view>
+      </view>
+    </view>
+    <!-- 底部导航 -->
+    <Footer :num='num'></Footer>
+  </view>
+</template>
+
+<script>
+var swiper = require('../../../common/js/swiper.min.js')
+// var myswiper = require('../../../common/js/swiper.js')
+import Footer from '../../../components/footer.vue'
+// import {
+// 	swiper
+// } from '../../../common/js/swiper.min.js';
+import {
+  myswiper
+} from '../../../common/js/swiper.js';
+export default {
+  components: {
+    Footer
+  },
+  data() {
+    return {
+      num: 0
+    };
+  },
+  onShow() {
+    console.log(myswiper, swiper)
+  },
+  methods: {
+
+  }
+}
+</script>
+<style>
+@import "../../../common/css/swiper.min.css";
+</style>
+<style lang="scss">
+/deep/.uni-view {
+  line-height: 0 !important;
+}
+
+.swiper-container {
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.swiper-slide {
+  background-position: center;
+  background-size: cover;
+  width: 300px;
+  height: 157px;
+  border-radius: 15px;
+}
+
+.center {
+  text-align: center;
+  color: #223041;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.flex {
+  display: flex;
+
+  image {
+    width: 8px;
+    height: 5px;
+    margin-left: 5px;
+  }
+}
+
+.flex-t {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.flex-space-around {
+  padding: 20px 0 10px 0;
+  display: flex;
+  justify-content: space-around;
+  color: #797979;
+  border-bottom: 1px solid #f2f2f2;
+}
+</style>

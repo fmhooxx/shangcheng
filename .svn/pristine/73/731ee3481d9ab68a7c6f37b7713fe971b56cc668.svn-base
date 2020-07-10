@@ -1,0 +1,84 @@
+<template>
+	<view>
+		<view class="hd-list border">
+			<text>成交时间</text>
+			<text>交易金额</text>
+			<text>交易数量</text>
+			<text>交易状态</text>
+		</view>
+		<view class="hd-list">
+			<text>成交时间</text>
+			<text>交易金额</text>
+			<text>交易数量</text>
+			<text>交易状态</text>
+		</view>
+		<view class="hd-list ">
+			<text>成交时间</text>
+			<text>交易金额</text>
+			<text>交易数量</text>
+			<text>交易状态</text>
+		</view>
+		<uniLoadMore :status="loadingType"></uniLoadMore>
+	</view>
+</template>
+
+<script>
+	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	export default {
+		components:{
+			uniLoadMore
+		},
+		data() {
+			return {
+				list:[],
+				start:0,
+				total:null,
+				id:'',
+				loadingType:'more'
+			};
+		},
+		onLoad(options) {
+			uni.setNavigationBarTitle({
+			　　title:options.id
+			})
+			this.id = options.id
+			this.getshu()
+		},
+		methods:{
+			async getshu(){
+				let data = {
+					FishOrderId:this.id,
+					Offset: Math.ceil(this.start / 10), //页面
+					RowNumber: 10 //条数
+				}
+				let StringData = JSON.stringify(data)
+				let param = {
+					data:StringData,
+					action:"ReadFishOrderRecord"
+				}
+				let res = await this.$api.api.assets(param)
+				if(res.data.status == true){
+					
+				}
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+.hd-list{
+	height: 80rpx;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	border-bottom: 1rpx solid #F5F5F5;
+	text{
+		flex: 1;
+		display: block;
+		text-align: center;
+	}
+}
+.border{
+	border-bottom: 15rpx solid #F5F5F5;
+}
+</style>

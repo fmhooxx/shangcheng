@@ -1,0 +1,125 @@
+<template>
+	<view class="order-wrap">
+		<view class="order-hd">
+			<view class="first">
+				<text>交易金额</text>
+				<text>订单号：1515151515211</text>
+			</view>
+			<view class="second">
+				<view><text style="color: #C34554;font-size: 32rpx;margin-right: 4rpx;">1455.33</text><text>CNY</text></view>
+				<view style="color: #00C09F;font-size: 30rpx;">已完成</view>
+			</view>
+			<view class="three">
+				<text>售出数量：</text>
+				<text style="font-size: 32rpx;color: #283849;">141414.11</text>
+				<text>FC</text>
+			</view>
+			<view class="three">
+				<text>获得金额</text>
+				<text style="font-size: 32rpx;color: #283849;">141414.11</text>
+				<text>CNY/FC</text>
+			</view>
+		</view>
+		<view class="ok">
+			<view>
+				<image src="../../../static/selected.png" mode=""></image>
+				<view>订单交易完成</view>
+				<view>如该订单有疑问可联系现在客服</view>
+			</view>
+		</view>
+		<view class="order-btn">
+			<view class="btn1"><image src="../../../static/delete.png" mode=""></image><text>联系卖家</text></view>
+			<view class="btn2" @click="jump()">返回积分页面</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				
+			};
+		},
+		methods:{
+			jump(){
+				uni.navigateBack({
+					
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+.order-hd{
+	// height: 243rpx;
+	width: 100%;
+	padding: 22rpx;
+	border-bottom:20rpx solid #F5F5F5;
+	border-top:20rpx solid #F5F5F5;
+	.first{
+		display: flex;
+		color: #BBBBBB;
+		font-size: 28rpx;
+		justify-content: space-between;
+	}
+	.second{
+		display: flex;
+		justify-content: space-between;
+		> view{
+			font-size: 28rpx;
+			color: #BBBBBB;
+		}
+	}
+	.three{
+		font-size: 28rpx;
+		color: #BBBBBB;
+		> text{
+			margin-right: 10rpx;
+		}
+	}
+}
+.ok{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 500rpx;
+	> view{
+		text-align: center;
+	}
+	image{
+		height: 98rpx;
+		width: 98rpx;
+	}
+}
+.order-btn{
+	position: fixed;
+	bottom: 0rpx;
+	height: 124rpx;
+	width: 100%;
+	display: flex;
+	> view{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		image{
+			height: 48rpx;
+			width: 48rpx;
+		}
+	}
+	.btn1{
+		flex: 4;
+		background-color: #EFF3F6;
+		font-size: 34rpx;
+		color: #283849;
+		margin-left: 10rpx;
+	}
+	.btn2{
+		flex: 6;
+		color: #FFFFFF;
+		font-size: 34rpx;
+		background-color: #5A6771;
+	}
+}
+</style>

@@ -1,0 +1,134 @@
+<template>
+  <view class="common">
+    <view class="common-box weixin"
+          @click="getWeiXin">
+      <view class="box-left">微信客服</view>
+      <view class="box-right"></view>
+    </view>
+    <view class="common-box qq"
+          @click="getQq">
+      <view class="box-left">QQ客服</view>
+      <view class="box-right"></view>
+    </view>
+    <view class="common-box"
+          @click="goMakePhoneCall">
+      <view class="box-left">电话客服</view>
+      <view class="box-right"></view>
+    </view>
+    <view class="common-box"
+          @click="Complaint">
+      <view class="box-left">投诉电话</view>
+      <view class="box-right"></view>
+    </view>
+  </view>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      // 微信号
+      weixinCode: 'qf385750150',
+      // QQ 号
+      qqCode: '1263562489',
+      // 拨打的手机号码
+      phone: '0575-87597265',
+      // 投诉电话
+      complaint: '13566641023'
+    };
+  },
+  methods: {
+    // 拨打号码
+    goMakePhoneCall() {
+      uni.makePhoneCall({
+        phoneNumber: this.phone
+      })
+    },
+    // 投诉电话
+    Complaint() {
+      uni.makePhoneCall({
+        phoneNumber: this.complaint
+      })
+    },
+    // 微信客服
+    getWeiXin() {
+      uni.showModal({
+        title: this.weixinCode,
+        content: '点击复制微信号',
+        success: (res) => {
+          if (res.confirm) {
+            uni.setClipboardData({
+              data: this.weixinCode
+            })
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        }
+      })
+    },
+    // QQ客服
+    getQq() {
+      uni.showModal({
+        title: this.qqCode,
+        content: '点击复制QQ号',
+        success: (res) => {
+          if (res.confirm) {
+            uni.setClipboardData({
+              data: this.qqCode
+            })
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        }
+      })
+    },
+  },
+}
+</script>
+<style>
+page {
+  background-color: #f5f5f5;
+}
+</style>
+<style lang="scss">
+.common {
+  margin-top: 20rpx;
+  .common-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 30rpx;
+    margin-bottom: 20rpx;
+    .box-right {
+      width: 20rpx;
+      height: 20rpx;
+      border-top: 1rpx solid #8a8a8a;
+      border-right: 1rpx solid #8a8a8a;
+      transform: rotate(45deg);
+    }
+  }
+  // 微信客服 微信的弹框
+  .common-popup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50rpx;
+    border-radius: 10rpx;
+    background-color: #fff;
+    .common-text {
+      margin-left: 10rpx;
+    }
+    .common-copy {
+      margin-top: 20rpx;
+      width: 140rpx;
+      height: 60rpx;
+      line-height: 60rpx;
+      text-align: center;
+      color: #fff;
+      border-radius: 6rpx;
+      background-color: #323f6c;
+    }
+  }
+}
+</style>

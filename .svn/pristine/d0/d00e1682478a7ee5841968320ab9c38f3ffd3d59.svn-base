@@ -1,0 +1,47 @@
+<script>
+/**
+ * vuex管理登陆状态，具体可以参考官方登陆模板示例
+ */
+import {
+  mapMutations
+} from 'vuex';
+export default {
+  methods: {
+    ...mapMutations(['login'])
+  },
+  onLaunch: function (e) {
+    uni.setStorageSync('openId', e.query.openId)
+    if (e.query.PageUrl == "register") {
+      uni.navigateTo({
+        url: '/pages/public/register'
+      })
+    }
+    let token = uni.getStorageSync('token')
+    if (e.query.PageUrl == "login" && !token) {
+      uni.navigateTo({
+        url: '/pages/public/login'
+      })
+    }
+    let userInfo = uni.getStorageSync('userInfo') || '';
+    if (userInfo.id) {
+      //更新登陆状态
+      uni.getStorage({
+        key: 'userInfo',
+        success: (res) => {
+          this.login(res.data);
+        }
+      });
+    }
+  },
+  onShow: function () {
+    // console.log('App Show')
+  },
+  onHide: function () {
+    // console.log('App Hide')
+  },
+}
+</script>
+
+<style lang="scss">
+@import "/common/css/common.scss";
+</style>

@@ -1,0 +1,174 @@
+<template>
+	<view class="center">
+		<view>
+			<text class="bold">一键买币</text>
+			<text class="gray">FC参考单价</text>
+		</view>
+		<view>
+			<text class="gray ">限额: </text><text class="kong"> 100-1000000</text>
+			<text class="cny ">1.00 CNY/FC</text>
+		</view>
+	
+		<view class="local"><input type="text" placeholder="购买数量 :"><text class="fc">FC</text></view>
+		<view class="local"><input type="text" placeholder="需要金额 :"><text class="cny fc">0.00CNY</text></view>
+		<view class="pay">
+			<view class="card" @click="choosePayWay(indexPay)" v-for="(itemPay,indexPay) in payWay" :key='indexPay' :class="itemPay.checked ?'choose' :''"><text>{{itemPay.name}}</text>
+				<image src="../../../static/full.png" v-if="itemPay.checked"></image>
+			</view>
+			<!-- <view class="card"><text>支付宝</text></view> -->
+			<!-- <view  class="card"><text>微信</text></view> -->
+			<view class="card"><text></text></view>
+		</view>
+		<view class="footer"><text>一键买入</text></view>
+	</view>
+</template>
+
+<script>
+	export default{
+		data() {
+				return {
+					payWay:[
+						{
+							name:'银行卡',
+							checked:true
+						},
+						{
+							name:'支付宝',
+							checked:false
+						},
+						{
+							name:'微信',
+							checked:false
+						}
+					]
+				};
+			},
+			methods: {
+				choosePayWay(index) {
+					for (var i in this.payWay) {
+						var obj = this.payWay[i]
+						obj.checked = index == i
+					}
+				}
+			}
+	}
+	
+</script>
+
+<style lang="scss" scoped>
+	.center {
+		padding: 40rpx 40rpx 0;
+	
+		>view {
+			display: flex;
+			align-items: flex-end;
+			justify-content: space-between;
+			margin-bottom: 40rpx;
+		}
+	}
+	
+	.gray {
+		color: #BBBBBB;
+	}
+	
+	.bold {
+		font-size: 35rpx;
+		color: #3F3F3F;
+		font-weight: bold;
+	}
+	
+	.cny {
+		flex: 2;
+		text-align: right;
+		font-weight: bold;
+	}
+	
+	.cny {
+		color: #E21656;
+		letter-spacing: 2rpx;
+	}
+	
+	.kong {
+		margin-left: 20rpx;
+	}
+	
+	.local {
+		border: 1rpx solid #BBBBBB;
+		height: 80rpx;
+		padding: 0 10rpx;
+		font-size: 28rpx;
+		position: relative;
+		border-radius: 15rpx;
+	
+		input {
+			width: 100%;
+			height: 100%;
+			font-size: 28rpx;
+		}
+	}
+	
+	.fc {
+		position: absolute;
+		right: 10rpx;
+		top: 20%;
+	}
+	
+	.pay {
+		width: 100%;
+		height: 80rpx;
+	}
+	
+	.card {
+		width: 23%;
+		height: 80rpx;
+		background-color: #F3F3F3;
+		line-height: 80rpx;
+		border-radius: 15rpx;
+		color: #B0B0B0;
+		position: relative;
+	
+		text {
+			display: inline-block;
+			width: 100%;
+			height: 100%;
+			text-align: center;
+		}
+	
+	}
+	
+	.choose {
+		border: 1rpx solid #C34554;
+		background-color: #fff;
+		color: #E21656;
+		font-weight: bold;
+	}
+	
+	.card:last-child {
+		background-color: #fff;
+	}
+	
+	.footer {
+		width: 100%;
+		height: 80rpx;
+		background-color: #C34554;
+		line-height: 80rpx;
+		border-radius: 15rpx;
+	
+		color: #fff;
+	
+		text {
+			display: inline-block;
+			width: 100%;
+			height: 100%;
+			text-align: center;
+		}
+	}
+	
+	image {
+		width: 40rpx;
+		height: 40rpx;
+		position: absolute;
+		right: 0rpx;
+		bottom: 0rpx;
+	}
+</style>

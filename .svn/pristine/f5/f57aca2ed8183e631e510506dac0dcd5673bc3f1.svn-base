@@ -1,0 +1,44 @@
+<template>
+	<view>
+		<view>名称：{{detail.AccountName}}</view>
+		<view>账号：{{detail.Account}}</view>
+		<view v-if="detail.Name">名字：{{detail.Name}}</view>
+		<view><image :src="detail.ImgUrl" mode=""></image></view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				id:'',
+				detail:''
+			};
+		},
+		onLoad(options) {
+			this.id = options.id
+			this.getInfo()
+		},
+		methods:{
+			async getInfo(){
+				let data = {
+					FishOrderId:this.id
+				}
+				let StringData = JSON.stringify(data)
+				let param = {
+					action:"ReadFishOrderPayInformation",
+					data:StringData
+				}
+				let res = await this.$api.api.getFish(param)
+				if(res.data.status == true){
+					let result = res.data.data
+					this.detail = result[0]
+				}
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+
+</style>

@@ -1,0 +1,158 @@
+<template>
+	<view>
+		<view  class="num-box">
+			<view class="num-box1">
+				<view>
+					<view style="color: #6EC39C;font-size: 40rpx;">1200.00</view>
+					<view style="font-size: 30rpx;">余额总量</view>
+				</view>
+				<view>
+					<view>1000.00</view>
+					<view>可用余额</view>
+				</view>
+				<view>
+					<view>200.00</view>
+					<view>冻结余额</view>
+				</view>
+			</view>
+			<view class="full"></view>
+		</view>
+		<view  class="num-box" style="margin-top: 12rpx;">
+			<view class="num-box1">
+				<view>
+					<view style="color: #6EC39C;font-size: 40rpx;">1200.00</view>
+					<view style="font-size: 30rpx;">总量FC</view>
+				</view>
+				<view>
+					<view>1000.00</view>
+					<view>可用FC</view>
+				</view>
+				<view>
+					<view>200.00</view>
+					<view>冻结FC</view>
+				</view>
+			</view>
+			<view class="full"></view>
+		</view>
+		<view class="czList" @click="navTo('/pages/FishCurrency/transaction/transaction')">
+			<view class="left">
+				<image src="/static/vip/jiaoyi.png" mode="" style="width: 50rpx;height: 50rpx;"></image>
+				<view><text>交易</text><text style="margin-left: 8rpx;color: rgb(167,167,167);"></text></view>
+			</view>
+			<view class="right">
+				<image src="/static/vip/right.png" mode=""></image>
+			</view>
+		</view>
+		<view class="czList" @click="navTo('/pages/integralPages/rechargeDetail')">
+			<view class="left">
+				<image src="/static/vip/jiaoyimingxi.png" mode="" style="width: 50rpx;height: 50rpx;"></image>
+				<text>交易明细</text>
+			</view>
+			<view class="right">
+				<image src="/static/vip/right.png" mode=""></image>
+			</view>
+		</view>
+		<view class="czList" @click="navTo('/pages/user/vipData')">
+			<view class="left">
+				<image src="/static/vip/tubiaozhexiantu.png" mode="" style="width: 50rpx;height: 50rpx;"></image>
+				<view><text>统计分析</text></view>
+			</view>
+			<view class="right">
+				<image src="/static/vip/right.png" mode=""></image>
+			</view>
+		</view>
+		<view class="czList" @click="navTo('/pages/binding/binding')">
+			<view class="left">
+				<image src="/static/vip/mingxi-2.png" mode="" style="width: 50rpx;height: 50rpx;"></image>
+				<view><text>我的收款</text></view>
+			</view>
+			<view class="right">
+				<image src="/static/vip/right.png" mode=""></image>
+			</view>
+		</view>
+		<!-- <Footer :num="num"></Footer> -->
+	</view>
+</template>
+
+<script>
+	// import Footer from '../../../components/footer.vue'
+	export default {
+		components: {
+			// Footer
+		},
+		data() {
+			return {
+				// num: 1
+			};
+		},
+		methods:{
+			navTo(url){
+				uni.navigateTo({
+					url:url
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.num-box{
+		width:698rpx;
+		height:154rpx;
+		margin: 34rpx auto 12rpx;
+		border-radius:25rpx;
+		box-shadow:0px 0px 14rpx 0px rgba(213,213,213,0.5);
+		position: relative;
+	}
+	.full{
+		position: absolute;
+		background-color: #979797;
+		height: 55rpx;
+		width: 2rpx;
+		top: 50rpx;
+		left: 236rpx;
+	}
+	.num-box1{
+		height: 100%;
+		width: 100%;
+		background:rgba(255,255,255,1);
+		display: flex;
+		align-items: center;
+		> view{
+			flex: 1;
+			text-align: center;
+			color: #656565;
+			font-size: 26rpx;
+		}
+	}
+	.czList {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 50rpx 30rpx;
+		border-bottom: 10rpx solid #F5F5F5;
+
+		.left {
+			display: flex;
+			align-items: center;
+
+			image {
+				height: 58rpx;
+				width: 58rpx;
+				margin-right: 30rpx;
+			}
+
+			text {
+				font-size: 28rpx;
+				color: #2D2D2D;
+			}
+		}
+
+		.right {
+			image {
+				height: 34rpx;
+				width: 34rpx;
+			}
+		}
+	}
+</style>
