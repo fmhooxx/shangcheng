@@ -7,15 +7,16 @@
           <input v-model="money"
                  @blur="moneyBlur"
                  type="number"
-                 placeholder="请输入提现金额" />
+                 placeholder="请输入转账金额" />
         </view>
-        <view class="reflect-one">当前FC余额 {{available}}, <text @click="withdrawal">全部转入</text></view>
+        <view class="reflect-one">当前FC个数 {{available}}, <text @click="withdrawal">全部转入</text></view>
       </view>
       <view class="reflect-title">
         <view class="reflect-box">
           <image src="/static/vip/r1.png"></image>
           <input type="number"
                  v-model="password"
+                 password="true"
                  placeholder="请输入交易密码" />
         </view>
       </view>

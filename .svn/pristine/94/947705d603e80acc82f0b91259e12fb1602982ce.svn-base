@@ -106,204 +106,185 @@ export default {
         this.weiXinNum = this.weiXinObj.Account;
         this.img = this.weiXinObj.ImgUrl;
         this.id = this.weiXinObj.ID;
-        this.copyImg = this.weiXinObj.ImgUrl.replace('cos.ap-nanjing','picnj');
+        this.copyImg = this.weiXinObj.ImgUrl;
       }
     },
- // 点击上传照片
- updata() {
- 	uni.chooseImage({
- 		count: 1,
- 		success: (res) => {
- 			this.copyImg = res.tempFiles[0].path
- 			this.urlTobase64(res.tempFiles[0].path)
- 		},
- 	});
- },
- // 转base64
- urlTobase64(url) {
- 	uni.request({
- 		url: url,
- 		method: 'GET',
- 		responseType: 'arraybuffer',
- 		success: ress => {
- 			let base64 = wx.arrayBufferToBase64(ress.data); //把arraybuffer转成base64 
- 			base64 = 'data:image/jpeg;base64,' + base64 //不加上这串字符，在页面无法显示的哦
- 			this.tempFiles = this.dataURLtoFile(base64, 'ssss') //转文件流
- 		}
- 	})
- },
- //得到文件
- dataURLtoFile(dataurl, filename) {
- 	var arr = dataurl.split(','),
- 		mime = arr[0].match(/:(.*?);/)[1],
- 		bstr = atob(arr[1]),
- 		n = bstr.length,
- 		u8arr = new Uint8Array(n);
- 	while (n--) {
- 		u8arr[n] = bstr.charCodeAt(n);
- 	}
- 	return new File([u8arr], filename, {
- 		type: mime
- 	});
- },
- //确定上传
- determine() {
- 	this.getAjax()
- },
- //修改
- modifyCopy() {
- 	uni.showModal({
- 		content: '确定修改',
- 		success: (res) => {
- 			if (res.confirm) {
- 				this.getAjax()
- 			} else if (res.cancel) {
- 				console.log('用户点击取消');
- 			}
- 		},
- 	});
- },
- getAjax() {
- 	if (this.uname == '') {
- 		return this.$api.msg('请输入姓名');
- 	}
- 	if (this.zhiFuBaoNum == '') {
- 		return this.$api.msg('请输入支付宝账号');
- 	}
- 	if (this.tempFiles == '' && this.img == '') {
- 		return this.$api.msg('请上传图片');
- 	}
- 	//上传到腾讯云
- 	this.upCOs()
- },
- upCOs() {
- 	console.log(this.isFlag)
- 	let pp = this.$api.tim.cos;
- 	let date = new Date()
- 	let mm = date.getTime()
- 	let pic = 'B2CBankCards/' + mm + ".jpg"
- 	let that = this
- 	pp.putObject({
- 			Bucket: 'im-1302325494',
- 			Region: 'ap-nanjing',
- 			Key: pic,
- 			StorageClass: 'STANDARD',
- 			Body: that.tempFiles, // 上传文件对象
- 			onProgress: (progressData) => {
- 				console.log(JSON.stringify(progressData));
- 				cosImg = first + pic;
- 				console.log(cosImg)
- 				if (this.isFlag) {
- 					that.ajax() //增加
- 				} else if (!this.isFlag) {
- 					that.modify() //修改
- 				}
- 			}
- 		},
- 		function(err, data) {
- 			console.log(err || data);
- 		}
- 	);
- },
- // 修改
- modify() {
- 	let pp = this.$api.tim.cos;
- 	console.log(this.img)
- 	let exampleobject = this.getCaption(this.img)
- 	let that = this
- 	pp.deleteObject({
- 		Bucket: 'im-1302325494',
- 		/* 必须 */
- 		Region: 'ap-nanjing',
- 		/* 存储桶所在地域，必须字段 */
- 		Key: exampleobject /* 必须 */
- 	}, function(err, data) {
- 		that.ajax()
- 		console.log(err || data);
- 	});
- },
- getCaption(obj) {
- 	var index = obj.lastIndexOf("\/B2C");
- 	obj = obj.substring(index + 1, obj.length);
- 	return obj;
- },
- async ajax() {
- 	if (this.isFlag) {
- 		let result = {};
- 		result = {
- 			Type: 12,
- 			// 账号
- 			Account: this.weiXinNum,
- 			// 银行名称
- 			AccountName: '微信',
- 			// 用户名
- 			Name: this.uname,
- 			// 图片路径
- 			ImgUrl: cosImg,
- 		};
- 		result = JSON.stringify(result);
- 		let datas = {
- 			action: 'CreatePaymentInformation',
- 			data: result,
- 		};
- 		let res = await this.$api.api.addTo(datas);
- 		if (res.data.status == true) {
- 			this.$api.msg('添加成功');
- 			var info = uni.getStorageSync('info');
- 			if (info) {
- 				if (info == 1) {
- 					uni.removeStorage('info');
- 					setTimeout(() => {
- 						uni.navigateTo({
- 							url: '/pages/integralPages/OTCBusiness/index',
- 						});
- 					}, 900);
- 				} else {
- 					uni.removeStorage('info');
- 					setTimeout(() => {
- 						uni.reLaunch({
- 							url: '/pages/FishCurrency/transaction/transaction',
- 						});
- 					}, 900);
- 				}
- 			} else {
- 				setTimeout(() => {
- 					uni.navigateBack({
- 						delta: 1
- 					})
- 				}, 900);
- 			}
- 		}
- 	} else {
- 		let result = {
- 			Type: 12,
- 			// 账号
- 			Account: this.weiXinNum,
- 			// 银行名称
- 			AccountName: '微信',
- 			// 用户名
- 			Name: this.uname,
- 			// 图片路径
- 			ImgUrl: cosImg,
- 			// 修改的 id
- 			ID: this.id,
- 		};
- 		result = JSON.stringify(result);
- 		let datas = {
- 			action: 'UpdatePaymentInformation',
- 			data: result,
- 		};
- 		let res = await this.$api.api.modifyQuery(datas);
- 		if (res.data.status == true) {
- 			this.$api.msg('修改成功');
- 			setTimeout(() => {
- 				uni.navigateBack({
- 					delta: 1
- 				})
- 			}, 1500);
- 		}
- 	}
- },
+    // 点击上传照片
+    updata () {
+      uni.chooseImage({
+        count: 1,
+        success: (res) => {
+          this.tempFiles = res.tempFiles[0]
+          this.copyImg = res.tempFiles[0].path
+        },
+      });
+    },
+    up (index) {
+      let pp = this.$api.tim.cos;
+      let date = new Date()
+      let mm = date.getTime()
+      let pic = 'B2CBankCards/' + mm + ".png"
+      let that = this
+      pp.putObject({
+        Bucket: 'im-1302325494',
+        Region: 'ap-nanjing',
+        Key: pic,
+        StorageClass: 'STANDARD',
+        Body: this.tempFiles, // 上传文件对象
+        onProgress: function (progressData) {
+          console.log(JSON.stringify(progressData));
+          cosImg = first + pic;
+          console.log(cosImg)
+          that.flag = true
+          if (index == 1) {
+            that.remodify()
+          } else if(index == 0) {
+            that.ok()
+          }
+        },
+        function (err, data) {
+          console.log(err || data);
+        }
+      })
+    },
+    async ok () {
+      let result = {};
+      result = {
+        Type: 12,
+        // 账号
+        Account: this.weiXinNum,
+        // 银行名称
+        AccountName: '微信',
+        // 用户名
+        Name: this.uname,
+        // 图片路径
+        ImgUrl: cosImg,
+      };
+      result = JSON.stringify(result);
+      let datas = {
+        action: 'CreatePaymentInformation',
+        data: result,
+      };
+      let res = await this.$api.api.addTo(datas);
+      if (res.data.status == true) {
+        this.$api.msg('添加成功');
+        var info = uni.getStorageSync('info');
+        if (info) {
+          if (info == 1) {
+            uni.removeStorage('info');
+            setTimeout(() => {
+              uni.navigateTo({
+                url: '/pages/integralPages/OTCBusiness/index',
+              });
+            }, 900);
+          } else {
+            uni.removeStorage('info');
+            setTimeout(() => {
+              uni.reLaunch({
+                url: '/pages/FishCurrency/transaction/transaction',
+              });
+            }, 900);
+          }
+        } else {
+          setTimeout(() => {
+            wx.navigateBack({
+              delta: 1
+            })
+          }, 1500);
+        }
+      }
+    },
+    modifyCopy () {
+      uni.showModal({
+        content: '确定修改?',
+        success: (res) => {
+          if (res.confirm) {
+            this.modify();
+          } else if (res.cancel) {
+            console.log('用户点击取消');
+          }
+        },
+      });
+    },
+    // 点击修改微信
+    async modify () {
+      if (this.uname == '') {
+        return this.$api.msg('请输入姓名');
+      }
+      if (this.weiXinNum == '') {
+        return this.$api.msg('请输入微信号');
+      }
+      this.del() //删除cos上的存储对象
+    },
+    del () {
+		if(this.tempFiles){
+			let pp = this.$api.tim.cos;
+			let exampleobject = this.getCaption(this.img)
+			let that = this
+			pp.deleteObject({
+			  Bucket: 'im-1302325494',
+			  /* 必须 */
+			  Region: 'ap-nanjing',
+			  /* 存储桶所在地域，必须字段 */
+			  Key: exampleobject /* 必须 */
+			}, function (err, data) {
+			  that.up(1)
+			  console.log(err || data);
+			});
+		}else{
+			this.tempFiles = this.copyImg
+			this.remodify(1)
+		}
+    },
+    async remodify (index) {
+		let imgUrl = ''
+		if(index == 1){
+			imgUrl = this.tempFiles
+		}else{
+			imgUrl = cosImg
+		}
+      let result = {};
+      result = {
+        Type: 12,
+        // 账号
+        Account: this.weiXinNum,
+        // 银行名称
+        AccountName: '微信',
+        // 用户名
+        Name: this.uname,
+        // 图片路径
+        ImgUrl: imgUrl,
+        // 修改的 id
+        ID: this.id,
+      };
+      result = JSON.stringify(result);
+      let datas = {
+        action: 'UpdatePaymentInformation',
+        data: result,
+      };
+      let res = await this.$api.api.modifyQuery(datas);
+      this.$api.msg('修改成功');
+      setTimeout(() => {
+        wx.navigateBack({
+          delta: 1
+        })
+      }, 1500);
+    },
+    getCaption (obj) {
+      var index = obj.lastIndexOf("\/B2C");
+      obj = obj.substring(index + 1, obj.length);
+      return obj;
+    },
+    // 点击添加微信
+    async determine () {
+      if (this.uname == '') {
+        return this.$api.msg('请输入姓名');
+      }
+      if (this.weiXinNum == '') {
+        return this.$api.msg('请输入微信号');
+      }
+      this.up(0)
+    },
     // 清空姓名
     removeUname () {
       this.uname = '';

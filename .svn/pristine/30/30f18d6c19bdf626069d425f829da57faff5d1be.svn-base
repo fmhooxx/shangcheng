@@ -32,25 +32,25 @@
     <view class="czList"
           @click="navTo('/pages/integralPages/onlineRecharge')">
       <view class="left">
-        <image src="/static/vip/mx.png"
+        <image src="../../static/vip/mx.png"
                mode=""></image>
         <text>线上充值</text>
       </view>
       <view class="right">
-        <image src="/static/vip/right.png"
+        <image src="../../static/vip/right.png"
                mode=""></image>
       </view>
     </view>
     <view class="czList"
           @click="navTo('/pages/integralPages/offlineTransaction')">
       <view class="left">
-        <image src="/static/vip/cz.png"
+        <image src="../../static/vip/cz.png"
                mode=""
                style="width: 50rpx; height: 50rpx;"></image>
         <text>线下充值</text>
       </view>
       <view class="right">
-        <image src="/static/vip/right.png"
+        <image src="../../static/vip/right.png"
                mode=""></image>
       </view>
     </view>
@@ -58,51 +58,38 @@
           style="border-top: 10rpx solid #F5F5F5;"
           @click="navTo('/pages/integralPages/OTCBusiness/index')">
       <view class="left">
-        <image src="/static/vip/jiaoyi.png"
+        <image src="../../static/vip/jiaoyi.png"
                mode=""
                style="width: 50rpx;height: 50rpx;"></image>
         <view><text>交易</text><text style="margin-left: 8rpx;color: rgb(167,167,167);">(C2C/OTC)</text></view>
       </view>
       <view class="right">
-        <image src="/static/vip/right.png"
+        <image src="../../static/vip/right.png"
                mode=""></image>
       </view>
     </view>
     <view class="czList">
       <view class="left">
-        <image src="/static/vip/jiaoyimingxi.png"
+        <image src="../../static/vip/jiaoyimingxi.png"
                mode=""
                style="width: 50rpx;height: 50rpx;"></image>
         <text>交易明细</text>
       </view>
       <view class="right">
-        <image src="/static/vip/right.png"
+        <image src="../../static/vip/right.png"
                mode=""></image>
       </view>
     </view> -->
     <view class="czList"
           @click="navTo('/pages/binding/binding')">
       <view class="left">
-        <image src="/static/vip/shoukuan.png"
+        <image src="../../static/vip/shoukuan.png"
                mode=""
                style="width: 50rpx; height: 50rpx;"></image>
         <text>我的收款</text>
       </view>
       <view class="right">
-        <image src="/static/vip/right.png"
-               mode=""></image>
-      </view>
-    </view>
-    <view class="czList"
-          @click="navTo('/pages/user/balanceWithdrawal')">
-      <view class="left">
-        <image src="/static/vip/mingxi-2.png"
-               mode=""
-               style="width: 50rpx; height: 50rpx;"></image>
-        <text>余额提现</text>
-      </view>
-      <view class="right">
-        <image src="/static/vip/right.png"
+        <image src="../../static/vip/right.png"
                mode=""></image>
       </view>
     </view>
@@ -111,17 +98,17 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       userInfo: '',
     };
   },
-  onShow () {
+  onLoad() {
     this.getUserInfo();
   },
   methods: {
     //得到用户信息
-    async getUserInfo () {
+    async getUserInfo() {
       let param = {
         action: 'GetMemberInfo',
       };
@@ -134,7 +121,7 @@ export default {
         this.userInfo = res.data.Data;
       }
     },
-    navTo (url) {
+    navTo(url) {
       uni.navigateTo({
         url: url,
       });

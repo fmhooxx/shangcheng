@@ -230,7 +230,7 @@ export default {
     // 猜你喜欢
     this.getIsLive();
   },
-  onShow () {
+  onShow() {
   },
   methods: {
     jump (url, id) {

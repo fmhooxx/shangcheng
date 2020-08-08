@@ -2,7 +2,7 @@
   <view class="content">
     <!-- 头部区域 -->
     <view class="common head">
-      <view style="flex: 2">序号</view>
+      <view style="flex: 1">序号</view>
       <view style="flex: 1">金额</view>
       <view style="flex: 2">状态</view>
       <view style="flex: 2">申请时间</view>
@@ -13,7 +13,7 @@
       <view class="common list-item"
             v-for="(item, index) in list"
             :key="index">
-        <view style="flex: 2">{{index + 1}}</view>
+        <view style="flex: 1">{{index + 1}}</view>
         <view style="flex: 1">{{item.Amount | numFilter}}</view>
         <view style="flex: 2"
               :class="item.IsCheck == -1 ? 'fails':''">{{item.IsCheck | IsCheck}}</view>
@@ -45,24 +45,43 @@ export default {
       // 底部的数据
       footerObj: '',
       // 是否有数据列表
-      isList: true
+      isList: true,
+      // 0 是表示 FC 提现记录 1 是表示余额提现记录
+      type: '',
+      action: ''
     };
   },
-  onLoad () {
-    // 查询提现记录接口
+  onLoad (options) {
+    this.type = options.type
+    if (this.type == 0) {
+      // 查询FC提现明细接口
+      this.action = 'ReadTiXian'
+      // this.getTransactionDetails()
+    } else if (this.type == 1) {
+      // 查询余额提现明细接口
+      this.action = 'ReadYuETiXian'
+      // this.getBalance()
+    }
     this.getTransactionDetails()
   },
   // 监听页面滚动到底部的事件
   onReachBottom () {
     this.page.pageIndex += 1
     if (this.flag) {
+      if (this.type == 0) {
+        this.action = 'ReadTiXian'
+        // this.getTransactionDetails()
+      } else if (this.type == 1) {
+        // this.getBalance()
+        this.action = 'ReadYuETiXian'
+      }
       this.getTransactionDetails()
     } else {
       this.$api.msg('没有更多数据了', 1500, true, 'none');
     }
   },
   methods: {
-    // 查询交易明细接口
+    // 查询FC提现明细接口
     async getTransactionDetails () {
       let result = {}
       result = {
@@ -72,7 +91,7 @@ export default {
       }
       result = JSON.stringify(result)
       let data = {
-        action: 'ReadTiXian',
+        action: this.action,
         data: result
       }
       let res = await this.$api.api.orderList(data)

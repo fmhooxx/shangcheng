@@ -571,6 +571,13 @@
 				"navigationBarBackgroundColor": "#223041",
 				"navigationBarTextStyle": "white"
 			}
+		}, {
+			"path": "pages/user/balanceWithdrawal",
+			"style": {
+				"navigationBarTitleText": "余额提现",
+				"navigationBarBackgroundColor": "#223041",
+				"navigationBarTextStyle": "white"
+			}
 		}
 	],
 	"globalStyle": {

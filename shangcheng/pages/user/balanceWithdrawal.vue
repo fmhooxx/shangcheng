@@ -32,17 +32,15 @@
     </view>
     <view class="reflect">
       <view class="reflect-title reflect-two">
-        <view>当前FC单价: {{unitPrice}}</view>
-        <view>当前提现金额: {{balance}}</view>
+        <view>提现余额 <text>只能提现整百的倍数</text></view>
         <view class="reflect-box">
           <image src="/static/vip/r2.png"></image>
           <input v-model="money"
                  @blur="moneyBlur"
                  type="number"
-                 placeholder="请输入提现个数" />
+                 placeholder="请输入提现金额" />
         </view>
-        <view class="reflect-one">当前FC个数 {{available}}, <text @click="withdrawal">全部提现</text></view>
-        <view>提现FC<text>只能提现整百的倍数</text></view>
+        <view class="reflect-one">当前余额余额 {{available | numFilter}}, <text @click="withdrawal">全部提现</text></view>
       </view>
       <view class="reflect-title">
         <view class="reflect-box">
@@ -87,9 +85,7 @@ export default {
       money: '',
       // 交易密码
       password: '',
-      userId: '',
-      balance: 0,
-      unitPrice: 0
+      userId: ''
     };
   },
   created () {
@@ -103,7 +99,7 @@ export default {
     // 去提现记录页面
     goRecord () {
       uni.navigateTo({
-        url: '/pages/integralPages/assetManagement/record?type=0'
+        url: '/pages/integralPages/assetManagement/record?type=1'
       });
     },
     // 点击提交申请
@@ -118,7 +114,7 @@ export default {
         return this.$api.msg('请输入整百的倍数的金额')
       }
       if (this.money > this.available) {
-        return this.$api.msg('提现金额大于可用FC余额')
+        return this.$api.msg('提现金额大于可用余额')
       }
       uni.showModal({
         title: '温馨提示',
@@ -133,8 +129,8 @@ export default {
     },
     async submits () {
       let data = {
-        action: 'AddCommissions3',
-        requesttype: 4,
+        action: 'AddCommissions5',
+        requesttype: 5,
         userid: this.userId,
         commissionmoney: this.money,
         TradePassword: this.password
@@ -155,7 +151,7 @@ export default {
     moneyBlur (e) {
       let num = parseInt(e.detail.value / 100) * 100
       if (num !== 0) {
-        return this.balance = (num * this.unitPrice).toFixed(2), this.money = num
+        return this.money = num
       }
       return this.money = '', this.$api.msg('请输入整百的倍数', 2000, true, 'none');
     },
@@ -164,7 +160,7 @@ export default {
       // this.money = this.available
       let num = parseInt(this.available / 100) * 100
       if (num !== 0) {
-        return this.balance = (num * this.unitPrice).toFixed(2), this.money = num
+        return this.money = num
       }
       return this.money = '', this.$api.msg('提现金额未满一百, 无法提现', 2000, true, 'none');
     },
@@ -178,9 +174,7 @@ export default {
           item.FishCoin = Number(item.FishCoin).toFixed(2)
         })
       }
-      this.unitPrice = Number(res.data.FCPrice)
-      // this.unitPrice = Math.round(res.data.FCPrice * 100) / 100
-      this.available = res.data.data[0].FishCoin
+      this.available = res.data.data[0].Points
     },
     // 查询银行卡、微信、支付宝
     async getQuery () {
@@ -214,6 +208,7 @@ export default {
     },
   },
   computed: {
+
   },
 };
 </script>
@@ -224,6 +219,7 @@ export default {
   align-items: center;
   padding: 20rpx 30rpx;
   line-height: 60rpx;
+  // border-bottom: 1rpx solid #b8b8b8;
   .common-left {
     margin-right: 10rpx;
   }
@@ -236,6 +232,7 @@ export default {
     border-bottom: 1rpx solid #b8b8b8;
     // border-radius: 8rpx;
     padding: 20rpx;
+    // background-color: #eee;
     .placeholder-common {
       font-size: 28rpx;
     }

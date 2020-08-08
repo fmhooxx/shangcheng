@@ -105,8 +105,7 @@ export default {
       id: '',
       // 判断图片是否上传完成
       flag: false,
-      tempFiles: '',
-	  tempFiles1:''
+      tempFiles: ''
     };
   },
   onLoad (options) {
@@ -163,6 +162,7 @@ export default {
 			  /* 存储桶所在地域，必须字段 */
 			  Key: exampleobject /* 必须 */
 			}, function (err, data) {
+				debugger
 			  that.up(1)
 			  console.log(err || data);
 			});
@@ -175,6 +175,7 @@ export default {
 		let imgUrl = ''
 		if(index == 1){
 			imgUrl = this.tempFiles
+			debugger
 		}else{
 			imgUrl = cosImg
 		}
@@ -237,7 +238,7 @@ export default {
         this.phone = this.cardObj.Tel;
         this.img = this.cardObj.ImgUrl;
         this.id = this.cardObj.ID;
-        this.copyImg = this.cardObj.ImgUrl.replace('cos.ap-nanjing','picnj');
+        this.copyImg = this.cardObj.ImgUrl;
       }
     },
     // 点击上传照片
@@ -247,37 +248,9 @@ export default {
         success: (res) => {
           this.tempFiles = res.tempFiles[0]
           this.copyImg = res.tempFiles[0].path;
-		  this.urlTobase64(res.tempFiles[0].path)
         },
       });
     },
-	// 转base64
-	urlTobase64(url) {
-		uni.request({
-			url: url,
-			method: 'GET',
-			responseType: 'arraybuffer',
-			success: ress => {
-				let base64 = wx.arrayBufferToBase64(ress.data); //把arraybuffer转成base64 
-				base64 = 'data:image/jpeg;base64,' + base64 //不加上这串字符，在页面无法显示的哦
-				this.tempFiles1 = this.dataURLtoFile(base64, 'ssss') //转文件流
-			}
-		})
-	},
-	//得到文件
-	dataURLtoFile(dataurl, filename) {
-		var arr = dataurl.split(','),
-			mime = arr[0].match(/:(.*?);/)[1],
-			bstr = atob(arr[1]),
-			n = bstr.length,
-			u8arr = new Uint8Array(n);
-		while (n--) {
-			u8arr[n] = bstr.charCodeAt(n);
-		}
-		return new File([u8arr], filename, {
-			type: mime
-		});
-	},
     // uploadFile() {
     //   uni.uploadFile({
     //     url: this.$config.domain.api + 'API/Files.ashx',
@@ -308,7 +281,7 @@ export default {
           Region: 'ap-nanjing',
           Key: pic,
           StorageClass: 'STANDARD',
-          Body: this.tempFiles1, // 上传文件对象
+          Body: this.tempFiles, // 上传文件对象
           onProgress: function (progressData) {
             console.log(JSON.stringify(progressData));
             cosImg = first + pic;
